@@ -1,0 +1,349 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>King Vypers - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#c9c4d8",
+                        "on-primary-fixed": "#1a0063",
+                        "error-container": "#93000a",
+                        "on-primary-fixed-variant": "#441cc8",
+                        "surface-bright": "#39393c",
+                        "inverse-surface": "#e4e1e6",
+                        "primary-fixed-dim": "#c9bfff",
+                        "on-tertiary-container": "#28283c",
+                        "on-secondary-container": "#bca9ff",
+                        "on-tertiary-fixed": "#1a1a2e",
+                        "primary": "#c9bfff",
+                        "surface-variant": "#353438",
+                        "tertiary": "#c6c4df",
+                        "primary-container": "#917eff",
+                        "on-primary-container": "#28008a",
+                        "outline": "#928ea1",
+                        "on-secondary-fixed-variant": "#4c3399",
+                        "on-background": "#e4e1e6",
+                        "surface-container-high": "#2a2a2d",
+                        "surface-container-highest": "#353438",
+                        "primary-fixed": "#e5deff",
+                        "secondary-fixed": "#e7deff",
+                        "secondary-container": "#4c3399",
+                        "error": "#ffb4ab",
+                        "background": "#131316",
+                        "surface-container-low": "#1b1b1e",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#5d3fe0",
+                        "on-surface": "#e4e1e6",
+                        "on-secondary": "#351782",
+                        "on-primary": "#2e009c",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "on-tertiary": "#2f2e43",
+                        "tertiary-fixed": "#e2e0fc",
+                        "outline-variant": "#484555",
+                        "inverse-on-surface": "#303033",
+                        "tertiary-fixed-dim": "#c6c4df",
+                        "tertiary-container": "#908ea8",
+                        "surface-tint": "#c9bfff",
+                        "surface": "#131316",
+                        "surface-container-lowest": "#0e0e11",
+                        "surface-container": "#1f1f22",
+                        "on-tertiary-fixed-variant": "#45455b",
+                        "secondary": "#cdbdff",
+                        "surface-dim": "#131316",
+                        "on-secondary-fixed": "#1f005f",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-desktop": "80px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Sora"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .neon-glow {
+            box-shadow: 0 0 20px 0 rgba(123, 97, 255, 0.3);
+        }
+        .bg-card-gradient {
+            background: linear-gradient(180deg, #1f1f29 0%, #16161d 100%);
+        }
+        .glowing-divider {
+            background: linear-gradient(90deg, transparent, #c9bfff, transparent);
+            height: 1px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #7b61ff, #4a00e0);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 10px 0 rgba(123, 97, 255, 0.8);
+        }
+        .btn-secondary {
+            border: 2px solid #c9bfff;
+            color: #c9bfff;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(201, 191, 255, 0.1);
+        }
+        .status-badge {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="bg-surface dark:bg-surface border-r border-outline-variant h-screen w-64 fixed left-0 top-0 hidden md:flex flex-col gap-2 p-4 h-full z-20">
+<div class="mb-8 flex items-center justify-center py-4">
+<span class="font-display-lg text-headline-lg font-black tracking-tighter text-primary">KING VYPERS</span>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold transition-transform transform scale-95" data-icon="dashboard" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="vpn_key" href="#">
+<span class="material-symbols-outlined">vpn_key</span>
+<span class="">My Keys</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="refresh" href="#">
+<span class="material-symbols-outlined">refresh</span>
+<span class="">HWID Reset</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="download" href="#">
+<span class="material-symbols-outlined">download</span>
+<span class="">Download</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="sports_esports" href="#">
+<span class="material-symbols-outlined">sports_esports</span>
+<span class="">Game Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="receipt_long" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="">Transactions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="person" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="settings" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="contact_support" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="">Support</span>
+</a>
+</nav>
+<div class="mt-auto">
+<div class="bg-surface-container-high rounded-xl p-4 mb-4 text-center border border-white/10">
+<h4 class="font-bold text-on-surface mb-1">Need Help?</h4>
+<p class="text-sm text-on-surface-variant mb-3">Join our Discord for fast support.</p>
+<button class="btn-primary w-full py-2 rounded-lg font-bold">Join Discord</button>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-error hover:bg-surface-variant rounded-lg transition-all duration-200" data-icon="logout" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-background dark:bg-background h-16 flex justify-between items-center px-margin-mobile md:px-margin-desktop w-full border-b border-outline-variant z-10 shrink-0">
+<div class="flex items-center">
+<h1 class="font-headline-lg-mobile md:font-headline-lg font-bold">Welcome back, Vyper User! 👋</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="flex items-center gap-3 cursor-pointer">
+<div class="text-right hidden sm:block">
+<div class="font-bold text-sm text-on-surface">Vyper User</div>
+<div class="text-xs text-primary">Premium Member</div>
+</div>
+<img alt="Vyper User Avatar" class="w-10 h-10 rounded-full border border-primary/30" data-alt="A stylized, neon-lit avatar of a cybernetic viper head, predominantly deep purple and electric blue, set against a dark obsidian background, fitting a high-tech gaming aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzqKH5aEWvND8UtOlP5qdfi_WZqbR2o70nzQ5PnBWEpSPSIgpghA6FkBWy8rI12ImdKzLhpG9I98Q_LK7mWlJQxg6evUw8ARmPwKZOhaVIXAhqtUcA1-4sMSAzdPXsYvtexvYK4tUMH7C2Tn1YqAmsMEc1AizqsR2bwm_38cY55sPaS_53CqyFUB-VcHSRxIF223K-NEOT-CjwtERbCK8PA7JGbiPPRq6hre_5QuxGS3-QfbZbAifCSQ">
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-4 md:p-gutter scroll-smooth">
+<div class="max-w-container-max mx-auto space-y-8 pb-12">
+<!-- Account Summary Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-card-gradient border border-white/10 rounded-xl p-6 hover:border-primary transition-colors group relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">workspace_premium</span>
+</div>
+<span class="flex items-center gap-1 text-xs text-[#4ade80] bg-[#4ade80]/10 px-2 py-1 rounded-full status-badge">
+<span class="w-2 h-2 rounded-full bg-[#4ade80]"></span> Active
+                            </span>
+</div>
+<p class="text-on-surface-variant text-sm mb-1">Premium Status</p>
+<p class="font-display-lg text-headline-lg font-bold text-[#4ade80]">Active</p>
+</div>
+<div class="bg-card-gradient border border-white/10 rounded-xl p-6 hover:border-primary transition-colors group relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">key</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm mb-1">Total Keys</p>
+<p class="font-display-lg text-headline-lg font-bold text-on-surface">5</p>
+</div>
+<div class="bg-card-gradient border border-white/10 rounded-xl p-6 hover:border-primary transition-colors group relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 rounded-full bg-[#4ade80]/20 flex items-center justify-center text-[#4ade80]">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm mb-1">Active Keys</p>
+<p class="font-display-lg text-headline-lg font-bold text-on-surface">3</p>
+</div>
+<div class="bg-card-gradient border border-white/10 rounded-xl p-6 hover:border-primary transition-colors group relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-[#fbbf24]/10 rounded-full blur-xl group-hover:bg-[#fbbf24]/20 transition-all"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="w-10 h-10 rounded-full bg-[#fbbf24]/20 flex items-center justify-center text-[#fbbf24]">
+<span class="material-symbols-outlined">vpn_key_off</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm mb-1">Unused Keys</p>
+<p class="font-display-lg text-headline-lg font-bold text-on-surface">2</p>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Script Loader Section -->
+<section class="lg:col-span-2 bg-card-gradient border border-white/10 rounded-xl p-6 neon-glow">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary">code</span>
+<h2 class="font-headline-lg-mobile font-bold text-on-surface">Loader Script (Public)</h2>
+</div>
+<p class="text-on-surface-variant text-sm mb-6">Gunakan loader ini untuk menjalankan semua script King Vypers.</p><p class="text-on-surface-variant text-sm mb-6">Pastikan Anda sudah menyalin script di bawah ini ke dalam executor pilihan Anda. Loader ini mendukung berbagai executor ternama dan diperbarui secara berkala untuk menjamin keamanan akun Anda dari deteksi.</p>
+<div class="bg-[#0A0A0C] border border-outline-variant rounded-lg p-4 mb-4 relative overflow-x-auto">
+<code class="font-label-sm text-primary">loadstring(game:HttpGet("https://loader.kingvypers.site/loader.lua"))()</code>
+</div>
+<div class="flex justify-end">
+<button class="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                                Copy Loader
+                            </button>
+</div>
+</section>
+<!-- HWID Reset Section -->
+<section class="bg-card-gradient border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center"><div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary">autorenew</span>
+<h2 class="font-headline-lg-mobile font-bold text-on-surface">HWID Reset</h2>
+</div>
+<div class="font-display-lg font-bold text-primary tracking-widest mb-2 flex justify-center gap-4 w-full"><div class="flex flex-col items-center"><span class="text-2xl">03</span><span class="text-[10px] text-on-surface-variant uppercase tracking-normal">Days</span></div><span class="text-on-surface-variant opacity-50">:</span><div class="flex flex-col items-center"><span class="text-2xl">12</span><span class="text-[10px] text-on-surface-variant uppercase tracking-normal">Hours</span></div><span class="text-on-surface-variant opacity-50">:</span><div class="flex flex-col items-center"><span class="text-2xl">45</span><span class="text-[10px] text-on-surface-variant uppercase tracking-normal">Minutes</span></div><span class="text-on-surface-variant opacity-50">:</span><div class="flex flex-col items-center"><span class="text-2xl">18</span><span class="text-[10px] text-on-surface-variant uppercase tracking-normal">Seconds</span></div></div>
+<p class="text-on-surface-variant text-xs mb-6">Cooldown berikutnya tersedia setelah timer selesai.</p>
+<div class="w-full mb-4 text-left">
+<label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">Masukkan Key Anda</label>
+<input type="text" placeholder="KVPS-XXXX-XXXX-XXXX" class="w-full bg-[#0A0A0C] border border-outline-variant rounded-lg px-4 py-3 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors">
+</div>
+<button class="btn-primary px-6 py-3 rounded-lg font-bold text-sm flex items-center gap-2 w-full justify-center">
+<span class="material-symbols-outlined text-sm">lock_open</span>
+Reset HWID
+</button></section>
+</div>
+<section class="bg-card-gradient border border-white/10 rounded-xl p-6 neon-glow">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary">vpn_key</span>
+      <h2 class="font-headline-lg-mobile font-bold text-on-surface">My Keys</h2>
+    </div>
+    <button class="btn-primary px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-sm">shopping_cart</span>
+      Buy New Key
+    </button>
+  </div>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="border-b border-outline-variant">
+          <th class="pb-4 font-bold text-xs uppercase tracking-widest text-on-surface-variant">Key ID</th>
+          <th class="pb-4 font-bold text-xs uppercase tracking-widest text-on-surface-variant">Package</th>
+          <th class="pb-4 font-bold text-xs uppercase tracking-widest text-on-surface-variant">Expiry Date</th>
+          <th class="pb-4 font-bold text-xs uppercase tracking-widest text-on-surface-variant">Status</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-outline-variant/30">
+        <tr class="group hover:bg-surface-variant/30 transition-colors">
+          <td class="py-4 font-label-sm text-on-surface">KVPS-XXXX-XXXX-1A2B</td>
+          <td class="py-4 text-sm text-on-surface-variant">30 Days Premium</td>
+          <td class="py-4 text-sm text-on-surface-variant">Oct 24, 2024</td>
+          <td class="py-4">
+            <span class="flex items-center gap-1 text-[10px] text-[#4ade80] bg-[#4ade80]/10 px-2 py-1 rounded-full status-badge w-fit">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></span> Active
+            </span>
+          </td>
+        </tr>
+        <tr class="group hover:bg-surface-variant/30 transition-colors">
+          <td class="py-4 font-label-sm text-on-surface">KVPS-XXXX-XXXX-3C4D</td>
+          <td class="py-4 text-sm text-on-surface-variant">Lifetime Access</td>
+          <td class="py-4 text-sm text-on-surface-variant">N/A</td>
+          <td class="py-4">
+            <span class="flex items-center gap-1 text-[10px] text-[#fbbf24] bg-[#fbbf24]/10 px-2 py-1 rounded-full status-badge w-fit">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#fbbf24] shadow-[0_0_8px_#fbbf24]"></span> Unused
+            </span>
+          </td>
+        </tr>
+        <tr class="group hover:bg-surface-variant/30 transition-colors">
+          <td class="py-4 font-label-sm text-on-surface">KVPS-XXXX-XXXX-5E6F</td>
+          <td class="py-4 text-sm text-on-surface-variant">7 Days Trial</td>
+          <td class="py-4 text-sm text-on-surface-variant">In 2 Hours</td>
+          <td class="py-4">
+            <span class="flex items-center gap-1 text-[10px] text-error bg-error/10 px-2 py-1 rounded-full status-badge w-fit">
+              <span class="w-1.5 h-1.5 rounded-full bg-error shadow-[0_0_8px_#ffb4ab]"></span> Expiring Soon
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section></div>
+</div>
+</main>
+
+
+</body></html>

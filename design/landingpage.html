@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>King Vypers - Roblox Script</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#908ea8",
+                      "on-secondary": "#351782",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed-variant": "#441cc8",
+                      "surface-container-high": "#2a2a2d",
+                      "on-error": "#690005",
+                      "on-tertiary-fixed": "#1a1a2e",
+                      "secondary-container": "#4c3399",
+                      "tertiary-fixed-dim": "#c6c4df",
+                      "on-secondary-container": "#bca9ff",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-fixed": "#1a0063",
+                      "on-background": "#e4e1e6",
+                      "on-surface-variant": "#c9c4d8",
+                      "surface-tint": "#c9bfff",
+                      "surface-container-lowest": "#0e0e11",
+                      "surface": "#131316",
+                      "on-surface": "#e4e1e6",
+                      "inverse-on-surface": "#303033",
+                      "on-tertiary-container": "#28283c",
+                      "outline-variant": "#484555",
+                      "secondary-fixed-dim": "#cdbdff",
+                      "surface-variant": "#353438",
+                      "surface-bright": "#39393c",
+                      "background": "#131316",
+                      "surface-container": "#1f1f22",
+                      "primary": "#c9bfff",
+                      "on-secondary-fixed-variant": "#4c3399",
+                      "surface-dim": "#131316",
+                      "secondary-fixed": "#e7deff",
+                      "primary-fixed": "#e5deff",
+                      "outline": "#928ea1",
+                      "on-tertiary": "#2f2e43",
+                      "tertiary-fixed": "#e2e0fc",
+                      "on-secondary-fixed": "#1f005f",
+                      "inverse-primary": "#5d3fe0",
+                      "inverse-surface": "#e4e1e6",
+                      "surface-container-low": "#1b1b1e",
+                      "primary-container": "#917eff",
+                      "primary-fixed-dim": "#c9bfff",
+                      "on-primary": "#2e009c",
+                      "on-primary-container": "#28008a",
+                      "on-tertiary-fixed-variant": "#45455b",
+                      "secondary": "#cdbdff",
+                      "surface-container-highest": "#353438",
+                      "error-container": "#93000a",
+                      "tertiary": "#c6c4df"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "80px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Sora"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Sora"
+                      ],
+                      "headline-lg-mobile": [
+                              "Sora"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0F0F12;
+            color: #e4e1e6;
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px 0 rgba(201, 191, 255, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #917eff 0%, #5d3fe0 100%);
+            box-shadow: 0 0 10px 0 rgba(145, 126, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 20px 0 rgba(145, 126, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #c9bfff 0%, #917eff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .surface-card {
+            background: linear-gradient(180deg, #1f1f22 0%, #131316 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.3s ease;
+        }
+        .surface-card:hover {
+            border-color: #917eff;
+        }
+        .divider-glow {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #917eff 50%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden relative selection:bg-primary-container selection:text-on-primary-container">
+<!-- Atmospheric Background Glows -->
+<div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+<div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] opacity-50 transform translate-x-1/3 -translate-y-1/3"></div>
+<div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary-container/10 rounded-full blur-[100px] opacity-40 transform -translate-x-1/3 translate-y-1/3"></div>
+</div>
+<!-- TopNavBar -->
+<nav class="docked full-width top-0 sticky z-50 bg-surface/60 backdrop-blur-xl border-b border-outline-variant/10 shadow-lg shadow-primary/5 transition-all duration-300">
+<div class="flex justify-between items-center h-20 px-gutter max-w-container-max mx-auto">
+<!-- Brand -->
+<a class="flex items-center gap-2 group" href="#">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined font-bold text-xl">token</span>
+</div>
+<span class="font-headline-lg text-primary text-xl font-black uppercase tracking-tighter group-hover:opacity-80 transition-opacity">KING VYPERS</span>
+</a>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex items-center gap-8">
+<a class="font-label-sm text-label-sm text-primary font-bold border-b-2 border-primary pb-1" href="#">Home</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant font-medium hover:text-primary transition-colors hover:bg-primary/10 px-3 py-2 rounded-md transition-all duration-300" href="#features">Features</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant font-medium hover:text-primary transition-colors hover:bg-primary/10 px-3 py-2 rounded-md transition-all duration-300" href="#games">Games</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant font-medium hover:text-primary transition-colors hover:bg-primary/10 px-3 py-2 rounded-md transition-all duration-300" href="#pricing">Pricing</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant font-medium hover:text-primary transition-colors hover:bg-primary/10 px-3 py-2 rounded-md transition-all duration-300" href="#showcase">Showcase</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant font-medium hover:text-primary transition-colors hover:bg-primary/10 px-3 py-2 rounded-md transition-all duration-300" href="#developers">Developers</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant font-medium hover:text-primary transition-colors hover:bg-primary/10 px-3 py-2 rounded-md transition-all duration-300" href="#faq">FAQ</a>
+</div>
+<!-- Trailing Action -->
+<div class="hidden md:flex items-center gap-4">
+<a class="btn-primary text-white font-label-sm text-label-sm px-6 py-2.5 rounded-full font-bold uppercase tracking-wider scale-95 active:scale-90 transition-transform" href="#pricing">
+                    Get Premium
+                </a>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative pt-24 pb-32 px-gutter overflow-hidden">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<!-- Content -->
+<div class="space-y-8 relative z-10">
+<div class="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 backdrop-blur-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">#1 Premium Roblox Script</span>
+</div>
+<h1 class="font-display-lg text-display-lg md:text-6xl text-on-surface font-extrabold leading-tight">
+                        Level Up Your <br/>
+<span class="gradient-text glow-effect bg-clip-text">Roblox</span> Experience
+                    </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg text-lg">
+                        Script premium berkualitas tinggi, aman, stabil, dan selalu update. Dirancang untuk memberikan pengalaman terbaik di berbagai game Roblox favoritmu.
+                    </p>
+<div class="flex flex-wrap gap-4 text-sm text-on-surface-variant">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Aman &amp; Anti Ban</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">update</span> Update Rutin</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">support_agent</span> Support 24/7</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span> Mudah Digunakan</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
+<button class="btn-primary text-white font-label-sm text-label-sm px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 uppercase tracking-wide">
+<span class="material-symbols-outlined text-lg">shopping_cart</span>
+                            Beli Sekarang
+                        </button>
+<button class="bg-surface-variant text-on-surface border border-outline-variant/30 hover:bg-surface-bright font-label-sm text-label-sm px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 uppercase tracking-wide transition-colors">
+                            Lihat Showcase
+                            <span class="material-symbols-outlined text-lg">play_arrow</span>
+</button>
+</div>
+<div class="flex items-center gap-4 pt-4 border-t border-outline-variant/20">
+<div class="flex -space-x-3">
+<img class="w-10 h-10 rounded-full border-2 border-surface object-cover" data-alt="A detailed 50-100 word prompt describing a modern gamer profile picture featuring a stylized avatar with glowing purple accents and futuristic streetwear, set against a dark, high-contrast digital background, representing a satisfied user in a dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsrf4vhtgiQY490fh4niE9ZO3XmKIYhHt7Cbz2QxydHPlztf8lWvgmh5AG2JsbUBLLU3PHOldE_mQPcDVnTmqTGfzZe2G9cpCf8eWXvPxdqErfZmdaJvKVjHI5w3l7vngyR9gDpTNZMxptdZT14HnLIEUPiOqgyoVllhpGjsiLR3hsGnGw-d3E5_Hcy0laYBY0fF0o67tUtyRB3cx7NyIQZglcwwHB4NBM-VSktQxpXghEZlsgtOiK6w"/>
+<img class="w-10 h-10 rounded-full border-2 border-surface object-cover" data-alt="A detailed 50-100 word prompt describing a secondary gamer profile picture featuring a sleek, cyberpunk-inspired helmet design with neon violet highlights, set against a deep obsidian background, representing another user in a premium tech UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx14SUATuEWC3o3i2ti6RROA37CVKfj4X7Q61Fq0yJY9Y-niKU7T_DnvOwwOVH2IPPmhVMfRKMeAHqtaGKsqIVqLiGqminwstUiJAGYv4XBX4o4u6ZeB_NAzuXLUTo5MwCwEPLPJ-3XfXcFLOD5OrHZyG8H5mOJ2g_2up7b53rkKe2r9x0akQZhPj0UriUwZ5hM0Zuni8uWPSrXA0zmbPNAX9kImlhv5aBPl9vnDe9KN5Un0lhfKFXZA"/>
+<img class="w-10 h-10 rounded-full border-2 border-surface object-cover" data-alt="A detailed 50-100 word prompt describing a third user avatar, abstract geometric digital art in dark purples and blacks, clean and modern, fitting a high-tech gaming script platform's dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaoT-A227LJU0MbK_X1iWL2PP90A8ywsrZMcprwmSxiVtsxL76JDKyFRqkQmiRpqEE8eOHQ1LBMSAGEvZrC9E9OJD2L4pOaJS6T2vudQfIJVq5yKJUINtSjmhV5rnyalfc94xFoYXhVeB-uKANzlA9aJ2kxs49MWTKv_D2Crt0gH4jFsGWlfFPhcYRCQa8hIbZOAEZknyvL1DZ7MnaUP9HbmeN0iwfAEy7Wo_zAlVur3XqoaA9YqrgHg"/>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container flex items-center justify-center text-xs text-primary font-bold z-10">+</div>
+</div>
+<p class="text-sm text-on-surface-variant">Trusted by more than <strong class="text-on-surface">10,000+</strong> users</p>
+</div>
+</div>
+<!-- Hero Image/Graphic -->
+<div class="relative w-full h-[600px] flex items-center justify-center lg:justify-end">
+<!-- Abstract glowing shapes behind character -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary-container/20 blur-[100px] rounded-full z-0"></div>
+<img class="relative z-10 w-full max-w-md object-contain animate-[float_6s_ease-in-out_infinite]" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg" style="animation: float 6s ease-in-out infinite;"/>
+<style>
+                        @keyframes float {
+                            0% { transform: translateY(0px); }
+                            50% { transform: translateY(-20px); }
+                            100% { transform: translateY(0px); }
+                        }
+                    </style>
+<!-- Floating Stat Cards -->
+<div class="absolute top-1/4 right-0 bg-surface-container/80 backdrop-blur-md border border-outline-variant/20 p-4 rounded-xl shadow-xl z-20 animate-[float_5s_ease-in-out_infinite_1s]">
+<p class="font-headline-lg text-primary text-2xl font-bold">100%</p>
+<p class="text-xs text-on-surface-variant uppercase tracking-wider mt-1">Safe &amp; Secure</p>
+</div>
+<div class="absolute bottom-1/4 left-0 lg:-left-10 bg-surface-container/80 backdrop-blur-md border border-outline-variant/20 p-4 rounded-xl shadow-xl z-20 animate-[float_7s_ease-in-out_infinite_0.5s]">
+<p class="font-headline-lg text-primary text-2xl font-bold">99.9%</p>
+<p class="text-xs text-on-surface-variant uppercase tracking-wider mt-1">Uptime</p>
+</div>
+<div class="absolute bottom-10 right-10 bg-surface-container/80 backdrop-blur-md border border-outline-variant/20 p-4 rounded-xl shadow-xl z-20 animate-[float_6s_ease-in-out_infinite_1.5s]">
+<p class="font-headline-lg text-primary text-2xl font-bold">10K+</p>
+<p class="text-xs text-on-surface-variant uppercase tracking-wider mt-1">Happy Users</p>
+</div>
+</div>
+</div>
+</section>
+<div class="divider-glow max-w-container-max mx-auto my-8"></div>
+<!-- Features Section -->
+<section class="py-24 px-gutter" id="features">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16 space-y-4">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">ABOUT SCRIPT</span>
+<h2 class="font-headline-lg text-headline-lg md:text-4xl text-on-surface font-bold">Kenapa Harus King Vypers?</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto">Dibuat dengan kualitas terbaik untuk memberikan performa maksimal di setiap game yang kamu mainkan.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Feature 1 -->
+<div class="surface-card p-8 rounded-2xl text-center group">
+<div class="w-16 h-16 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl">speed</span>
+</div>
+<h3 class="font-bold text-on-surface text-xl mb-3">Performa Stabil</h3>
+<p class="text-sm text-on-surface-variant">Script dioptimalkan untuk performa terbaik tanpa lag dan crash.</p>
+</div>
+<!-- Feature 2 -->
+<div class="surface-card p-8 rounded-2xl text-center group">
+<div class="w-16 h-16 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl">sync</span>
+</div>
+<h3 class="font-bold text-on-surface text-xl mb-3">Selalu Update</h3>
+<p class="text-sm text-on-surface-variant">Update rutin menyesuaikan dengan game update agar tetap aman digunakan.</p>
+</div>
+<!-- Feature 3 -->
+<div class="surface-card p-8 rounded-2xl text-center group">
+<div class="w-16 h-16 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl">widgets</span>
+</div>
+<h3 class="font-bold text-on-surface text-xl mb-3">Fitur Lengkap</h3>
+<p class="text-sm text-on-surface-variant">Fitur premium lengkap yang membuat pengalaman bermain lebih menyenangkan.</p>
+</div>
+<!-- Feature 4 -->
+<div class="surface-card p-8 rounded-2xl text-center group">
+<div class="w-16 h-16 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+</div>
+<h3 class="font-bold text-on-surface text-xl mb-3">Aman &amp; Terpercaya</h3>
+<p class="text-sm text-on-surface-variant">Sistem keamanan berlapis untuk menjaga akun kamu tetap aman dari banned.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Showcase Section -->
+<section class="py-24 px-gutter" id="showcase">
+<div class="max-w-container-max mx-auto bg-surface-container border border-outline-variant/10 rounded-3xl p-8 md:p-12 relative overflow-hidden">
+<!-- Inner Glow for Section -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-primary/10 blur-[80px] z-0"></div>
+<div class="relative z-10 text-center mb-12 space-y-4">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">SHOWCASE SCRIPT</span>
+<h2 class="font-headline-lg text-headline-lg md:text-3xl text-on-surface font-bold">Lihat Script In Action</h2>
+</div>
+<div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Showcase Item 1 -->
+<div class="group">
+<div class="aspect-video bg-surface-container-high rounded-xl border border-outline-variant/20 overflow-hidden relative shadow-lg">
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+<button class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<img class="w-full h-full object-cover" data-alt="A detailed 50-100 word prompt depicting a screenshot of a high-tech game interface dashboard for 'Auto Farm &amp; Quest', featuring sleek dark UI panels with glowing purple toggles and data readouts, superimposed over a vibrant digital game world environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0UBASw53yLgtE_-jJ5UNOjSqZy28-VnvtdxH8-lTgHtukmD8YPnbz-bzxLJQFL-sCesW80w-DnV_iIsGHiCRceaHgU_Y_qbSj-Pa0ImqPKLZLS3Q64d39Kfq0ddBmK3z-pKlc70Ym3YR9rWa1UZwqQaszKr94idKeP1vTEw-1-0tqAbfW3LHImI9ahslXZX5OSStLBTjftAc8AmfxEoL7Rbf8cxGObbVB0l4Rc9EXG3E3hm-VAE0Vcg"/>
+</div>
+<h4 class="text-on-surface font-semibold mt-4 text-center">Auto Farm &amp; Quest</h4>
+</div>
+<!-- Showcase Item 2 -->
+<div class="group">
+<div class="aspect-video bg-surface-container-high rounded-xl border border-outline-variant/20 overflow-hidden relative shadow-lg">
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+<button class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<img class="w-full h-full object-cover" data-alt="A detailed 50-100 word prompt depicting a screenshot of a high-tech game interface dashboard for 'Auto Raid / Dungeon', showing complex dark-mode menus with neon violet accents and progression bars, overlaying a dark, atmospheric dungeon game scene." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuM0j3gCMSFuYD_BU0MydMJ6OPLYPs37V8AINFw7w3lvKRPKes58UearGJl_dyt-zUeyqXpPFcWtCuhe9ikT7B3ZzPzO3HgAm74i9ZeYEnc8NHIGGTwveHnL25DnkxMmAxd5WglJFpwctY52hn6VtwZlhaGpKQThuFXxvn3uosgmSfC0TDBJDutN_PrsHljmCsJRk4UhLtbix4R2dGXlkXaiiTKk_r_GeEsi1horWDF9BblwysHV07_Q"/>
+</div>
+<h4 class="text-on-surface font-semibold mt-4 text-center">Auto Raid / Dungeon</h4>
+</div>
+<!-- Showcase Item 3 -->
+<div class="group">
+<div class="aspect-video bg-surface-container-high rounded-xl border border-outline-variant/20 overflow-hidden relative shadow-lg">
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+<button class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<img class="w-full h-full object-cover" data-alt="A detailed 50-100 word prompt depicting a screenshot of a high-tech game interface dashboard for 'Auto Collect &amp; Sell', with inventory management grids in a sophisticated dark theme, highlighted by electric purple borders, set against a lively digital town background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3I7AyxzghulnAE6DVHtQGeK1ryoxZcaaL1B3_gV7hmmTPHIHLFZa79sfuL9KJXBZjm2arNyUkAwyD7NWdfr2UDQL3zuzEdVxA5zQhXPWQslwvIjOH_KFWOoTWpLg30M-bo0CuRy5FFf-6SzhYERY9pqIplODrsMOQQdEVWdusKsy_BQjVWX6knVCOEGituCIBAqKUrzJpgHLHONWSklWCCdO4XNYiIA8OC4HEADX5Zkln-eocDGCyWg"/>
+</div>
+<h4 class="text-on-surface font-semibold mt-4 text-center">Auto Collect &amp; Sell</h4>
+</div>
+</div>
+<div class="relative z-10 text-center mt-12">
+<button class="btn-primary text-white font-label-sm text-label-sm px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 mx-auto uppercase tracking-wide">
+                        Lihat Semua Showcase
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Games Section -->
+<section class="py-24 px-gutter" id="games">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Games Info (Left) -->
+<div class="lg:col-span-3 space-y-6">
+<h2 class="font-headline-lg text-headline-lg md:text-3xl text-on-surface font-bold">Game Support <br/><span class="text-primary">Premium</span></h2>
+<p class="text-on-surface-variant text-sm">Mendukung berbagai game populer dengan fitur yang selalu update.</p>
+<button class="bg-surface-container hover:bg-surface-bright text-on-surface border border-outline-variant/30 font-label-sm text-label-sm px-5 py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors w-full sm:w-auto">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+                            Lihat Semua Game
+                        </button>
+</div>
+<!-- Games Grid (Center) -->
+<div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
+<!-- Game Items -->
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Blox Fruits', vibrant colors with a stylized fruit and sword motif, fitting a modern digital gaming platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8lqYJpvIHUA7Y09PHa5If3q-oqIV9l023gx_f2VNJcIiW8fW5EOJDdnnm_wc4jRqfskzb0W6MyuINw6e7PiJILm75FdIcJhgu18z4Hv8s1rqQGovf8ULdL-_764bW1nlcAEgU7w8rObPB6WnQA8oojH2hnLbh7lAlUFnqhNCcn7NGc4055bKxjhQj5UeDJmOunTJ67w5ijYJU6c3fKg8zlZeRrFFDN9SBib8nOLGUyrEPS9mdDhIcXA"/>
+<span class="text-sm font-medium text-on-surface">Blox Fruits</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Pet Simulator 99', featuring a cute stylized pet character in a modern 3D rendering style, vibrant and colorful." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLtlbzBJWhCzhFlmwC1BOcYTfdxUqIx1-t0nnDQyAL8eTudpnjto07lld7DysBU2Dci6qoGRoyesaULwhMq440j7RjodVu_Nu1wTW3e7_yrW5S7GX8Cpny-GyZnEB302ZmjC2qXElYYAQnvjJ74qeFSsnv4ysw1WpjPjRhGKjt8vmSSo5SVk6CS1Fwd10KVh6Nh7v3YGdWjEzvg3dCkAz_UgUWjtaMWzeMHgotzPG0tn6CvNxCzGjOiA"/>
+<span class="text-sm font-medium text-on-surface">Pet Simulator 99</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'King Legacy', featuring a stylized anime-inspired character or sword emblem in bright colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI4-LyJwS5ZTSWTklCaCKqFTZdurvnSWzB0BJSvCVtmFnAEx5feHspfdmBc8JCUJ8RFAdTafjIblZgblrkFyHeA_PZsOdEV6GOS2vVb2YoWAtsRpTtTzXuOv-xEVQgV2a0QbY6VZoXs3K566_biNfCDa3TA67AQ4fDVcHSZlY5Haq-9xITfRIZIeoTCeoO127duiBO8WEOx0Vcdxv9ELznIHFejJKa7lurL2x5dTUxZpz_fyRasP2dmA"/>
+<span class="text-sm font-medium text-on-surface">King Legacy</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Anime Adventures', featuring vibrant anime-style character art in a compact square frame." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN1QnkqlAPlXE3Zc6JLci6Xfh4h3SYotoD-axLTIyZYIDCtBnzS9sBCVnEa4L34DfYplznlSRuzHvlMDDWLlXN1eeh9kvJj9JecjKQTJlREWk4ANq18w3z_tDSE7_VkcptIkrFoaUn0ND_qZrWgcS9c_j7ZnkzjYp13XdcODT9txJngXaa4LfmxX6gypPql59uK7PuAltbrfwHPlFIhAHKGXM_J1FT1oVSi57OZn3Ah-uC-fUtFEGgyA"/>
+<span class="text-sm font-medium text-on-surface text-xs leading-tight">Anime Adventures</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'A One Piece Game', pirate or nautical theme with anime aesthetics, vibrant and stylized." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3cmmOWff-BOzerdNxkYXTPT8a2II0Ks4y8ng3tY2uXHKeWpd7gx9H-Tzwu7LoHRK4DyYj-K8xJTigXKrNyeKgQg0rmM9-2SoAzYgleiIDVv2Zuz1CiAGBUMGzZcNB9NLYosaxn9Lv-cdUsOtMUQHs6E_tyZAx56WFF5zO6SsGAYK11qzibAOoZptDCnaPVU22kM_ju31AeL9AfYiNLnYLgvLQOrDlWsVNABMiO34Le-mv3t-XOkvvyw"/>
+<span class="text-sm font-medium text-on-surface text-xs leading-tight">A One Piece Game</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Bee Swarm Simulator', featuring a cute digital bee character, bright and colorful." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp8362G7I7UoD-kSnXu3aVz10plqpYGvkgKHUi6BegI7LEMKCJQoo_8nhEoeDRiA6a1F1gWvYYJakcxN02nFpDNhOmmBYzCgy01joGvL7FjSN5WaD4fOqjgCDCCg0t4Ej4DWMQuIGvRvthaA5EH4PalqfWtVtFW5jUDGUxZpfCAd2pLb4LklNCRjmD3Nw021BScZmREWEY6AX1wm8VFKRSiSyDafGR4Ccx5fy-OjMp_gTiLIpvRuqNAA"/>
+<span class="text-sm font-medium text-on-surface text-xs leading-tight">Bee Swarm Simulator</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Brookhaven RP', featuring a stylized modern house or city element, casual and colorful." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0XaVPAsXGT05fCAbkbuTr-iYTUpICnL7fFlZNUzbh9ibFGgtnO25b164okWMYBOKZwgKYyO-viHXhBuPENYqlF13vA90N73xu1z0_WmQGEGa1M5NF9v6HByIxULbz66PqKLblYLiIjzLmm6dkEq-BQrlLC8vpF20riXYzBmJygIvvrf9eAN5mwlqSvXvJqW8D0xYqpAA6hb2m6xgendfeM55baye3P8PO5HZk5jdVfaRrR8Ays4vqCA"/>
+<span class="text-sm font-medium text-on-surface">Brookhaven RP</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Arsenal', featuring stylized military or weapon imagery, action-oriented." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_CrHZe7AhaQWOj4N412rg-dgM31ZOQLQ17w6pzd5TUr2oGvnFgdVN2B4EyPipRsM7v1E1mX6UJJRfQTRm5pWkBiUUb7ciuY-uKf5Gj-WyhvntwyPKww8jGanutMbykZ3jo-5D5RO9qXOHwuFM27khmggmjzE9kEu4HLNQAybqfhUAGY1rwZlZYYnuyHGuVJjCH2K_RKLV6B3HE-wmpIBdlC9latAH06MdgnH1Z4GUJB8KBtUk47Ht6Q"/>
+<span class="text-sm font-medium text-on-surface">Arsenal</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Doors', featuring a spooky, stylized door in a dark setting, hinting at a horror theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_V7IMsz6R_n__PteibrwILr9pfBGC-JVwsNUC7f1scScF77UG1e07NGnwWMJe0V8utaQA5IydgpzrxMI9SqUUfnhzRxuQFWn17QdollJTaFExc2DOP9Jq1AtkUyOeJiIHN4Nsmarcyuyr3v0vKx6eRsK2T2ULUzMHbfO0G6yRXUKvO_FmIanlnu6NySQS6GrwDF6aanVDw_g-Abu7AhcdAoSy--A8hizObv8IfUm-QFmobAA4iJ6Jxg"/>
+<span class="text-sm font-medium text-on-surface">Doors</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'Tower Defense Simulator', featuring a stylized defense tower or sci-fi unit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzwiILTLMVGHOJCqE0Pj8pohwcF1iQiAXaYVaQvOek60WJ-JJXXFpVsyXoXhS4ZcEijg7Qz4MusQgtgq1paeJJeJwiyMW6-HHHhFpefG0tHxnfyxMkdilV3v8yn1jSBvhHntDxbs_R5w1j6QqHBiZtdfN7skshtpmtbEUyuTJzvwdJo1lYW-MjHIK8HI03-SM8yx-BwqweQgmndVhIjj_BS2KBnBBnkP6lTyJ74V5D-n9WV8LeDUuBGg"/>
+<span class="text-sm font-medium text-on-surface text-xs leading-tight">Tower Defense Simulator</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center gap-3">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A detailed 50-100 word prompt showing a square icon for a game called 'BedWars', featuring a stylized bed or blocky combat scene." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkGvea4RGFVqeOAWjW_m6jIPJUaVdTCLjaf6sofsOhQwFtcGH1UmxU_slnYdKBR_FXBMJ0RoTUf3nc_6ISLDUbhX_MYWMJol_qPB7N6aoOjA8_IvQ0fF-vxgSCoVeb9SpPUw-F5ZARVWxZ7vQETzCt9TFPchKWKlTgqF0kozqlzge_lG_ABhRHqrbKDCXKmhgDHvVB5SgM3jHrPVvez973jCBHKe1chJThCOGwGMZCbhivg5EHpUGpg"/>
+<span class="text-sm font-medium text-on-surface">BedWars</span>
+</div>
+<div class="surface-card p-3 rounded-xl flex items-center justify-center gap-3 bg-surface-container-high hover:bg-surface-bright cursor-pointer border-dashed">
+<span class="material-symbols-outlined text-primary">apps</span>
+<span class="text-sm font-medium text-primary">Dan Banyak Lagi</span>
+</div>
+</div>
+<!-- Status Indicator (Right) -->
+<div class="lg:col-span-3">
+<div class="surface-card p-6 rounded-2xl h-full flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-primary mb-6">Status Game Support</h4>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<div class="w-2.5 h-2.5 rounded-full bg-green-500 mt-1.5 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Full Support</p>
+<p class="text-xs text-on-surface-variant">Fitur lengkap &amp; optimal</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="w-2.5 h-2.5 rounded-full bg-yellow-500 mt-1.5 shadow-[0_0_8px_rgba(234,179,8,0.5)]"></div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Partial Support</p>
+<p class="text-xs text-on-surface-variant">Beberapa fitur tersedia</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="w-2.5 h-2.5 rounded-full bg-red-500 mt-1.5 shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Not Support</p>
+<p class="text-xs text-on-surface-variant">Belum tersedia</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/20">
+<p class="text-sm text-on-surface-variant">Total Game Supported</p>
+<p class="font-bold text-primary text-lg">50+ Games</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Top Played Games -->
+<section class="py-12 px-gutter">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-10 space-y-2">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">GAME SUPPORT?</span>
+<h3 class="font-headline-lg text-2xl md:text-3xl text-on-surface font-bold">Game Paling Banyak Dimainkan</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Top Game 1 -->
+<div class="surface-card rounded-2xl overflow-hidden group">
+<div class="h-32 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A detailed 50-100 word prompt showing a wide banner image for 'Blox Fruits' game, vibrant and action-packed anime style setting with explosive effects, fitting a premium gaming site dark mode design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9p9la42kIHq2del3Ie1pFFAOY_k52hyqsEwuvHN5aQksgLN3ARkGDWJwjEKzBOfqQEE5zt3xfIvi2iQS_VHdUg719ft2oh1ustUoPN2z8H_OoZbyxIVPcrYKlWnMnHbJ8IkVYJWQL1lz05RMcYmpCbPEXfpFnVxh5TDGDjrvpVwMzuanGqOS8s8VuRoIMOE5wcKq1vOkGoT1BvxHPyRIua-NbutXkdKoxcqPZC8uJbas9yBXKP6on5Q"/>
+<div class="absolute top-2 left-2 w-6 h-6 bg-yellow-500 text-black text-xs font-bold flex items-center justify-center rounded-md shadow-lg">1</div>
+</div>
+<div class="p-4 text-center">
+<h4 class="font-semibold text-on-surface">Blox Fruits</h4>
+<p class="text-xs text-on-surface-variant mt-1">456K+ Players</p>
+</div>
+</div>
+<!-- Top Game 2 -->
+<div class="surface-card rounded-2xl overflow-hidden group">
+<div class="h-32 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A detailed 50-100 word prompt showing a wide banner image for 'Brookhaven RP' game, showing a stylized, sunny digital town street view, fitting a premium gaming site dark mode design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVf2DmpJsCA4LoDTf9lGFgvr2wQ342pxxF5dFFSAQnhwl3W6JLKPK3YctOMJxo6jHTWhvB6lXF8AWSh-q2OfHisF8PaMRHD4c7G8glUiVl4dQI-WLdd_kTs7ItyV6Dhf4YsVujFBTRM21-5tgOoOtxXQUiwCKSc1gAoN8E_ZSaWzlr1bNpTyJItfJq4z3GXK4B2S6IBz3x30QQ3EiJxLnO7kRhIillj6eMxfEoKO-6cj6TaeglJ4FBTQ"/>
+<div class="absolute top-2 left-2 w-6 h-6 bg-surface-container-high text-on-surface border border-outline-variant/30 text-xs font-bold flex items-center justify-center rounded-md shadow-lg">2</div>
+</div>
+<div class="p-4 text-center">
+<h4 class="font-semibold text-on-surface">Brookhaven RP</h4>
+<p class="text-xs text-on-surface-variant mt-1">315K+ Players</p>
+</div>
+</div>
+<!-- Top Game 3 -->
+<div class="surface-card rounded-2xl overflow-hidden group">
+<div class="h-32 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A detailed 50-100 word prompt showing a wide banner image for 'Pet Simulator 99' game, featuring a bright, colorful scene with stylized cute digital pets, fitting a premium gaming site dark mode design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQnZgMqUry8u03XAQOYX_aI-tzapt1ZGoJkVzdqt8179k3oeqKmq67FHEhgAs5Jtovycu25ppk7K4ro6I-pkNLxORsaByTTGPFbCdRIODpVG8G703_50e_icIR3mBRMUXzD49EhfY05KkRUOgtXmg_QbpRZ933vjtkMvWt6mNTTkAoalyE2WksTc-X6GPdOsD2HPXEJaPVxDTG9K5jrsiBzsauSanx0CtxkjRQ55Rwvvfj47YxxtYxXw"/>
+<div class="absolute top-2 left-2 w-6 h-6 bg-surface-container-high text-on-surface border border-outline-variant/30 text-xs font-bold flex items-center justify-center rounded-md shadow-lg">3</div>
+</div>
+<div class="p-4 text-center">
+<h4 class="font-semibold text-on-surface">Pet Simulator 99</h4>
+<p class="text-xs text-on-surface-variant mt-1">245K+ Players</p>
+</div>
+</div>
+<!-- Top Game 4 -->
+<div class="surface-card rounded-2xl overflow-hidden group">
+<div class="h-32 relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A detailed 50-100 word prompt showing a wide banner image for 'Anime Adventures' game, featuring dynamic anime-style characters in battle poses against a colorful backdrop, fitting a premium gaming site dark mode design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ8jBVNqLIr6nXoU2KNdMhqOhBAZsbMhDNoH710V5xfAqYVH9IzjchkCrguzN1Zico_Ru3Rwn5-Jo8RmaNptSGcQ3xRVHwX7OsKOBhLxfiCGuNXxX6bBZPhBISPCN8A5vI_5o8v_Z4OfLl-8dEJVUFqfqTLspIsdTyZvzTJO8mgZqPk46-QLnLiqMBsHbRd0UM-qgsLEKAZPPJZXyZxrt_728w2j4RLsL-4w2YkX2yJhNrWlaUTQRqjw"/>
+<div class="absolute top-2 left-2 w-6 h-6 bg-surface-container-high text-on-surface border border-outline-variant/30 text-xs font-bold flex items-center justify-center rounded-md shadow-lg">4</div>
+</div>
+<div class="p-4 text-center">
+<h4 class="font-semibold text-on-surface">Anime Adventures</h4>
+<p class="text-xs text-on-surface-variant mt-1">180K+ Players</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="py-24 px-gutter relative" id="pricing">
+<div class="absolute inset-0 bg-primary/5 clip-path-polygon-[0_10%,100%_0,100%_90%,0_100%] z-0 pointer-events-none"></div>
+<div class="max-w-container-max mx-auto relative z-10">
+<div class="text-center mb-16 space-y-4">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">PILIH PAKET PREMIUM</span>
+<h2 class="font-headline-lg text-headline-lg md:text-4xl text-on-surface font-bold">Daftar Harga</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto">Pilih paket <span class="text-primary font-semibold">yang sesuai kebutuhanmu</span></p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
+<!-- Pricing Card 1 -->
+<div class="surface-card p-8 rounded-3xl flex flex-col h-full border border-outline-variant/20">
+<div class="text-center mb-8">
+<h3 class="text-xl font-bold text-on-surface mb-2">1 Hari</h3>
+<p class="text-sm text-on-surface-variant mb-6">Trial Premium</p>
+<div class="flex items-start justify-center gap-1">
+<span class="text-primary font-bold mt-1">Rp</span>
+<span class="text-4xl font-extrabold text-on-surface tracking-tight">15.000</span>
+</div>
+</div>
+<div class="flex-grow">
+<ul class="space-y-4 text-sm text-on-surface-variant">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Akses semua fitur premium</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Support semua game</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Update selama masa aktif</li>
+</ul>
+</div>
+<button class="w-full mt-8 bg-surface-container hover:bg-surface-bright text-on-surface border border-outline-variant/30 font-label-sm text-label-sm py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors uppercase tracking-wide">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+                            Beli Sekarang
+                        </button>
+</div>
+<!-- Pricing Card 2 (Popular) -->
+<div class="surface-card p-8 rounded-3xl flex flex-col h-full border-2 border-primary relative glow-effect transform scale-105 z-10 bg-surface-container-low">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white font-label-sm text-[10px] px-3 py-1 rounded-full uppercase tracking-widest font-bold flex items-center gap-1 shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span> Paling Populer
+                        </div>
+<div class="text-center mb-8 pt-2">
+<h3 class="text-2xl font-bold text-on-surface mb-2">30 Hari</h3>
+<p class="text-sm text-primary mb-6 font-medium">Paling Populer</p>
+<div class="flex items-start justify-center gap-1">
+<span class="text-primary font-bold mt-1">Rp</span>
+<span class="text-5xl font-extrabold text-on-surface tracking-tight">75.000</span>
+</div>
+</div>
+<div class="flex-grow">
+<ul class="space-y-4 text-sm text-on-surface">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span> Akses semua fitur premium</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span> Support semua game</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span> Update selama masa aktif</li>
+</ul>
+</div>
+<button class="w-full mt-8 btn-primary text-white font-label-sm text-label-sm py-4 rounded-xl font-bold flex items-center justify-center gap-2 uppercase tracking-wide">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+                            Beli Sekarang
+                        </button>
+</div>
+<!-- Pricing Card 3 -->
+<div class="surface-card p-8 rounded-3xl flex flex-col h-full border border-outline-variant/20">
+<div class="text-center mb-8">
+<h3 class="text-xl font-bold text-on-surface mb-2">Permanent</h3>
+<p class="text-sm text-on-surface-variant mb-6">Lifetime Access</p>
+<div class="flex items-start justify-center gap-1">
+<span class="text-primary font-bold mt-1">Rp</span>
+<span class="text-4xl font-extrabold text-on-surface tracking-tight">200.000</span>
+</div>
+</div>
+<div class="flex-grow">
+<ul class="space-y-4 text-sm text-on-surface-variant">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Akses semua fitur premium</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Support semua game</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-sm">check</span> Update selama masa aktif</li>
+</ul>
+</div>
+<button class="w-full mt-8 bg-surface-container hover:bg-surface-bright text-on-surface border border-outline-variant/30 font-label-sm text-label-sm py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors uppercase tracking-wide">
+<span class="material-symbols-outlined text-sm">shopping_cart</span>
+                            Beli Sekarang
+                        </button>
+</div>
+</div>
+<!-- Feature List & Guarantee Below Pricing -->
+<div class="max-w-4xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-surface-container/50 border border-outline-variant/10 p-8 rounded-3xl">
+<div>
+<h4 class="font-label-sm text-primary uppercase tracking-widest mb-6">KENAPA PILIH PREMIUM?</h4>
+<ul class="space-y-4 text-sm text-on-surface-variant">
+<li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-lg">done_all</span> Akses semua fitur tanpa batas</li>
+<li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-lg">done_all</span> Update rutin tanpa biaya tambahan</li>
+<li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-lg">done_all</span> Support cepat &amp; responsif</li>
+<li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-lg">done_all</span> Aman 100% dari banned</li>
+<li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-lg">done_all</span> Bisa digunakan di semua device</li>
+<li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-lg">done_all</span> Panduan lengkap dan mudah</li>
+</ul>
+</div>
+<div class="surface-card p-6 rounded-2xl border border-primary/30 flex items-center gap-6">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-3xl">verified</span>
+</div>
+<div>
+<h4 class="text-on-surface font-bold text-lg">Garansi 7 Hari</h4>
+<p class="text-on-surface-variant text-sm mt-1">Uang kembali jika tidak puas</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Developer / Socials Section -->
+<section class="py-24 px-gutter" id="developers">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- About Founder -->
+<div class="surface-card p-8 rounded-3xl lg:col-span-1">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-6 block">ABOUT ME (FOUNDER)</span>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-3xl">token</span>
+</div>
+<div>
+<h3 class="font-bold text-on-surface text-xl">King Vypers</h3>
+<p class="text-sm text-primary">Founder &amp; Developer</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-8 leading-relaxed">
+                        Halo! Saya King Vypers, developer script Roblox sejak 2021. Fokus saya adalah membuat script berkualitas tinggi, aman, dan selalu update untuk memberikan pengalaman terbaik bagi user.
+                    </p>
+<div class="flex justify-between border-t border-outline-variant/20 pt-6">
+<div class="text-center">
+<p class="font-bold text-primary text-xl">3+</p>
+<p class="text-xs text-on-surface-variant">Tahun Experience</p>
+</div>
+<div class="text-center">
+<p class="font-bold text-primary text-xl">10K+</p>
+<p class="text-xs text-on-surface-variant">Happy Users</p>
+</div>
+<div class="text-center">
+<p class="font-bold text-primary text-xl">50+</p>
+<p class="text-xs text-on-surface-variant">Game Supported</p>
+</div>
+</div>
+</div>
+<!-- Social Media -->
+<div class="surface-card p-8 rounded-3xl lg:col-span-1 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-2 block">SOCIAL MEDIA</span>
+<p class="text-sm text-on-surface-variant mb-6">Terhubung dengan saya di platform berikut</p>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<a class="bg-surface-container-high hover:bg-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-outline-variant/10" href="#">
+<span class="material-symbols-outlined text-[#5865F2] text-3xl">forum</span> <!-- Discord stand-in -->
+<span class="text-xs font-semibold text-on-surface">Discord</span>
+<span class="text-[10px] text-on-surface-variant">Join Server</span>
+</a>
+<a class="bg-surface-container-high hover:bg-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-outline-variant/10" href="#">
+<span class="material-symbols-outlined text-[#FF0000] text-3xl">play_circle</span> <!-- YT stand-in -->
+<span class="text-xs font-semibold text-on-surface">YouTube</span>
+<span class="text-[10px] text-on-surface-variant">Subscribe</span>
+</a>
+<a class="bg-surface-container-high hover:bg-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-outline-variant/10" href="#">
+<span class="material-symbols-outlined text-on-surface text-3xl">music_note</span> <!-- TikTok stand-in -->
+<span class="text-xs font-semibold text-on-surface">TikTok</span>
+<span class="text-[10px] text-on-surface-variant">Follow</span>
+</a>
+</div>
+</div>
+<button class="w-full btn-primary text-white font-label-sm text-label-sm py-3 rounded-xl font-bold flex items-center justify-center gap-2 uppercase tracking-wide">
+<span class="material-symbols-outlined text-sm">groups</span>
+                        Join Semua
+                    </button>
+</div>
+<!-- Developer Team -->
+<div class="surface-card p-8 rounded-3xl lg:col-span-1">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-2 block">DEVELOPER TEAM</span>
+<p class="text-sm text-on-surface-variant mb-6">Team di balik King Vypers</p>
+<div class="space-y-4">
+<div class="flex items-center gap-4 bg-surface-container/50 p-3 rounded-xl border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-lg">token</span>
+</div>
+<div>
+<h4 class="font-semibold text-sm text-on-surface">King Vypers</h4>
+<p class="text-xs text-primary">Founder &amp; Developer</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-surface-container/50 p-3 rounded-xl border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface flex-shrink-0">
+<span class="material-symbols-outlined text-lg">code</span>
+</div>
+<div>
+<h4 class="font-semibold text-sm text-on-surface">Vyper Dev</h4>
+<p class="text-xs text-on-surface-variant">Script Developer</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-surface-container/50 p-3 rounded-xl border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface flex-shrink-0">
+<span class="material-symbols-outlined text-lg">design_services</span>
+</div>
+<div>
+<h4 class="font-semibold text-sm text-on-surface">Vyper UI/UX</h4>
+<p class="text-xs text-on-surface-variant">UI/UX Designer</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-surface-container/50 p-3 rounded-xl border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center text-on-surface flex-shrink-0">
+<span class="material-symbols-outlined text-lg">support_agent</span>
+</div>
+<div>
+<h4 class="font-semibold text-sm text-on-surface">Vyper Support</h4>
+<p class="text-xs text-on-surface-variant">Support Manager</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="full-width bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/10 pt-16 pb-8">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12 px-gutter max-w-container-max mx-auto mb-16">
+<!-- Brand & Copy -->
+<div class="md:col-span-4 space-y-4 opacity-80 hover:opacity-100 transition-opacity">
+<a class="flex items-center gap-2" href="#">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined font-bold text-xl">token</span>
+</div>
+<span class="font-headline-lg text-on-surface text-lg font-bold uppercase tracking-tighter">KING VYPERS</span>
+</a>
+<p class="font-label-sm text-label-sm text-primary uppercase tracking-widest mt-1">Premium Roblox Script</p>
+<p class="font-body-md text-sm text-on-surface-variant mt-8">© 2024 King Vypers. All rights reserved.</p>
+</div>
+<!-- Quick Links -->
+<div class="md:col-span-2">
+<h4 class="font-bold text-on-surface mb-6">Quick Links</h4>
+<ul class="space-y-3 font-label-sm text-label-sm">
+<li><a class="text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#">Home</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#features">Features</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#games">Games</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#pricing">Pricing</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#showcase">Showcase</a></li>
+</ul>
+</div>
+<!-- Support -->
+<div class="md:col-span-2">
+<h4 class="font-bold text-on-surface mb-6">Support</h4>
+<ul class="space-y-3 font-label-sm text-label-sm">
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#faq">FAQ</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#">Terms of Service</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#">Refund Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-transform duration-200 inline-block" href="#">Contact Us</a></li>
+</ul>
+</div>
+<!-- Stay Updated -->
+<div class="md:col-span-4">
+<h4 class="font-bold text-on-surface mb-2">Stay Updated</h4>
+<p class="text-sm text-on-surface-variant mb-6">Dapatkan update terbaru dan promo menarik!</p>
+<form class="flex gap-2">
+<input class="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2 text-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Masukkan email kamu" type="email"/>
+<button class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-bold" type="submit">Subscribe</button>
+</form>
+<div class="flex gap-4 mt-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">forum</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">play_circle</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">music_note</span></a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

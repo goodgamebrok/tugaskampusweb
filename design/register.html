@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en" style="">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>King Vypers - Register</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#4c3399",
+                        "outline": "#928ea1",
+                        "on-primary": "#2e009c",
+                        "surface-container-highest": "#353438",
+                        "on-secondary-fixed-variant": "#4c3399",
+                        "outline-variant": "#484555",
+                        "on-tertiary-container": "#28283c",
+                        "on-primary-fixed": "#1a0063",
+                        "on-background": "#e4e1e6",
+                        "primary-container": "#917eff",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#c9c4d8",
+                        "error": "#ffb4ab",
+                        "surface": "#131316",
+                        "surface-variant": "#353438",
+                        "on-tertiary": "#2f2e43",
+                        "surface-tint": "#c9bfff",
+                        "on-primary-container": "#28008a",
+                        "tertiary": "#c6c4df",
+                        "error-container": "#93000a",
+                        "inverse-on-surface": "#303033",
+                        "on-tertiary-fixed-variant": "#45455b",
+                        "on-tertiary-fixed": "#1a1a2e",
+                        "secondary-fixed-dim": "#cdbdff",
+                        "on-primary-fixed-variant": "#441cc8",
+                        "background": "#131316",
+                        "secondary": "#cdbdff",
+                        "inverse-primary": "#5d3fe0",
+                        "surface-container": "#1f1f22",
+                        "tertiary-container": "#908ea8",
+                        "surface-container-high": "#2a2a2d",
+                        "surface-container-low": "#1b1b1e",
+                        "surface-bright": "#39393c",
+                        "tertiary-fixed": "#e2e0fc",
+                        "primary-fixed-dim": "#c9bfff",
+                        "on-surface": "#e4e1e6",
+                        "on-secondary": "#351782",
+                        "on-error": "#690005",
+                        "inverse-surface": "#e4e1e6",
+                        "secondary-fixed": "#e7deff",
+                        "on-secondary-fixed": "#1f005f",
+                        "tertiary-fixed-dim": "#c6c4df",
+                        "primary-fixed": "#e5deff",
+                        "surface-container-lowest": "#0e0e11",
+                        "surface-dim": "#131316",
+                        "primary": "#c9bfff",
+                        "on-secondary-container": "#bca9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "80px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Sora"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0F0F12;
+            color: #e4e1e6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #917eff 0%, #5d3fe0 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body
+    class="min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container relative overflow-x-hidden">
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-margin-mobile md:p-gutter">
+        <div
+            class="w-full max-w-md bg-surface-container border border-outline-variant/20 rounded-2xl p-8 md:p-10 shadow-lg relative overflow-hidden group">
+            <div class="relative z-10 flex flex-col items-center">
+                <!-- Logo Area -->
+                <div class="flex flex-col items-center mb-8">
+                    <a class="flex items-center gap-2 group mb-2" href="#">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+                            <span class="material-symbols-outlined font-bold text-xl">token</span>
+                        </div>
+                        <span
+                            class="font-headline-lg text-primary text-xl font-black uppercase tracking-tighter group-hover:opacity-80 transition-opacity">KING
+                            VYPERS</span>
+                    </a>
+                    <p class="font-label-sm text-label-sm text-primary uppercase mt-1 tracking-widest text-center">
+                        Premium Roblox Script</p>
+                </div>
+                <div class="w-full text-center mb-8">
+                    <h2 class="font-headline-lg text-2xl text-on-surface mb-2 font-bold">Buat Akun</h2>
+                    <p class="text-on-surface-variant font-body-md text-sm">Daftar untuk akses premium sekarang.</p>
+                </div>
+                <!-- Registration Form -->
+                <form class="w-full space-y-4">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-outline-variant">person</span>
+                        </div>
+                        <input
+                            class="w-full bg-surface border border-outline-variant/30 text-on-surface rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder-outline-variant font-body-md text-sm"
+                            id="fullname" name="fullname" placeholder="Nama Lengkap" required="" type="text" />
+                    </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-outline-variant">mail</span>
+                        </div>
+                        <input
+                            class="w-full bg-surface border border-outline-variant/30 text-on-surface rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder-outline-variant font-body-md text-sm"
+                            id="email" name="email" placeholder="Email" required="" type="email" />
+                    </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-outline-variant">lock</span>
+                        </div>
+                        <input
+                            class="w-full bg-surface border border-outline-variant/30 text-on-surface rounded-lg py-3 pl-10 pr-10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder-outline-variant font-body-md text-sm"
+                            id="password" name="password" placeholder="Password" required="" type="password" />
+                        <button
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-outline-variant hover:text-primary transition-colors"
+                            type="button">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
+                        </button>
+                    </div>
+                    <button
+                        class="w-full mt-6 btn-primary text-white font-label-sm text-label-sm uppercase tracking-wider py-4 rounded-xl font-bold transition-all duration-300 transform active:scale-[0.98]"
+                        type="submit">
+                        Daftar Sekarang
+                    </button>
+                </form>
+                <div class="mt-8 text-center w-full">
+                    <p class="font-body-md text-sm text-on-surface-variant">
+                        Sudah punya akun?
+                        <a class="text-primary hover:text-primary-container font-semibold transition-colors duration-300 hover:underline underline-offset-4"
+                            href="#">Masuk di sini</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+</body>
+
+</html>

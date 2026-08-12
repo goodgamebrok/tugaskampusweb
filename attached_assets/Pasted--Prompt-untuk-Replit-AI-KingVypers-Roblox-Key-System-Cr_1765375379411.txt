@@ -1,0 +1,208 @@
+# Prompt untuk Replit AI - KingVypers Roblox Key System
+
+Create a full-stack web application called "KingVypers" - a Roblox script key management system with the following specifications:
+
+## Core Features Required
+
+### 1. Authentication System
+- Admin-only access with secure login
+- Password hashing using bcrypt
+- JWT token-based authentication
+- Session management
+
+### 2. Key Management System
+The key system must support:
+- Generate keys with customizable duration (1 month, 2 months, etc.)
+- Each key can only be used on ONE device (HWID/device fingerprint binding)
+- Key expiration tracking with automatic status updates
+- Key blacklisting capability
+- Manual key deletion
+- Key reset for specific users (unbind from device)
+
+### 3. Key Validation API
+Create REST API endpoints for Roblox script integration:
+- `POST /api/validate-key` - Validates key and binds to device HWID
+  - Parameters: `key`, `hwid` (hardware ID from Roblox executor)
+  - Response: `{ success: boolean, message: string, expiresAt: date }`
+- `GET /api/check-key/:key` - Check key status without binding
+- The API should:
+  - Check if key exists and is valid
+  - Verify key hasn't expired
+  - If first use: bind key to HWID permanently
+  - If already used: verify HWID matches stored HWID
+  - Return appropriate error messages
+
+### 4. Admin Dashboard
+Create comprehensive admin panel with:
+
+**Dashboard Overview:**
+- Total keys generated
+- Active keys count
+- Expired keys count
+- Revenue tracking (total earnings)
+- Recent key activations log
+- Graph/chart showing key usage over time
+
+**Key Management Page:**
+- Table displaying all keys with columns:
+  - Key code
+  - Status (Active/Expired/Unused)
+  - Duration (1 month, 2 months, etc.)
+  - Created date
+  - Activation date
+  - Expiration date
+  - Bound HWID (if activated)
+  - Actions (Delete, Blacklist, Reset)
+- Search and filter functionality
+- Bulk actions support
+- Export to CSV
+
+**Generate Key Page:**
+- Form to create new keys:
+  - Duration selector (1 month, 2 months, 3 months, custom)
+  - Price input (for revenue tracking)
+  - Quantity (generate multiple keys at once)
+  - Optional notes/customer info
+- Display generated keys clearly for copying
+
+**Revenue Tracking Page:**
+- Total revenue
+- Revenue by time period (daily, weekly, monthly)
+- Revenue breakdown by key duration
+- Transaction history
+
+**Settings Page:**
+- Change admin password
+- API key management
+- System configuration
+
+## Technical Stack Requirements
+
+### Backend:
+- **Node.js** with **Express.js**
+- **Database**: PostgreSQL or MongoDB (choose best for Railway deployment)
+- **Authentication**: JWT + bcrypt
+- **API**: RESTful API with proper error handling
+- **Security**: 
+  - Rate limiting on API endpoints
+  - CORS configuration
+  - Input validation and sanitization
+  - SQL injection prevention
+
+### Frontend:
+- **React.js** with modern UI framework (Tailwind CSS or Material-UI)
+- **Responsive design** - works on mobile and desktop
+- **Dashboard components**:
+  - Charts using Recharts or Chart.js
+  - Data tables with sorting/filtering
+  - Toast notifications for actions
+  - Loading states and error handling
+
+### Database Schema:
+```sql
+-- Keys table
+keys:
+  - id (primary key)
+  - key_code (unique, indexed)
+  - duration_months (integer)
+  - price (decimal)
+  - status (enum: unused, active, expired, blacklisted)
+  - hwid (string, nullable)
+  - created_at (timestamp)
+  - activated_at (timestamp, nullable)
+  - expires_at (timestamp, nullable)
+  - notes (text, nullable)
+
+-- Admin table
+admins:
+  - id (primary key)
+  - username (unique)
+  - password_hash (string)
+  - created_at (timestamp)
+
+-- Logs table (optional)
+logs:
+  - id (primary key)
+  - action (string)
+  - key_id (foreign key)
+  - details (json)
+  - timestamp (timestamp)
+```
+
+## Deployment Configuration
+
+- Configure for **Railway.com** deployment
+- Include necessary environment variables in `.env.example`:
+  ```
+  PORT=3000
+  DATABASE_URL=
+  JWT_SECRET=
+  ADMIN_USERNAME=
+  ADMIN_PASSWORD=
+  NODE_ENV=production
+  ```
+- Include `railway.json` or `Procfile` if needed
+- Production-ready build scripts
+- Health check endpoint
+
+## Additional Requirements
+
+1. **Key Generation Logic**:
+   - Generate cryptographically secure random keys (format: XXXX-XXXX-XXXX-XXXX)
+   - Ensure uniqueness in database
+
+2. **Auto-expiration System**:
+   - Background job or middleware to check and update expired keys
+   - Calculate expiration based on activation date + duration
+
+3. **Security Best Practices**:
+   - Helmet.js for security headers
+   - Rate limiting to prevent brute force
+   - API key validation
+   - Secure HWID handling
+
+4. **Error Handling**:
+   - Comprehensive error messages
+   - Logging system for debugging
+   - Graceful fallbacks
+
+5. **Documentation**:
+   - README.md with setup instructions
+   - API documentation for integration with Roblox script
+   - Environment variables documentation
+
+## File Structure
+```
+kingvypers/
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   └── utils/
+│   ├── server.js
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── App.jsx
+│   ├── package.json
+│   └── vite.config.js (or webpack)
+├── .env.example
+├── .gitignore
+├── railway.json
+└── README.md
+```
+
+## Important Notes
+- The system should be production-ready and secure
+- Include proper error handling and validation
+- Make the admin dashboard intuitive and easy to use
+- Ensure the API is fast and reliable for Roblox script integration
+- Add loading states and user feedback throughout the UI
+
+Please create a complete, working implementation that I can immediately deploy to Railway.com for testing.
