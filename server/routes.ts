@@ -1678,6 +1678,7 @@ export async function registerRoutes(
         hwidResetAt: key.hwidResetAt,
         hwidResetCount: key.hwidResetCount,
         source: key.source,
+        discordId: key.discordId,
         message: `Key status: ${key.status}`,
       });
     } catch (error) {
