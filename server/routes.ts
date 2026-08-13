@@ -162,7 +162,7 @@ export async function registerRoutes(
     try {
       const { keyCode, discordId } = req.body;
       if (!keyCode || !discordId) return res.status(400).json({ ok: false, message: "keyCode and discordId required" });
-      
+
       const key = await storage.getKeyByCode(keyCode.toUpperCase());
       if (!key) return res.status(404).json({ ok: false, message: "Key not found" });
 
@@ -182,7 +182,7 @@ export async function registerRoutes(
     try {
       const { discordId } = req.query;
       if (!discordId) return res.status(400).json({ keys: [] });
-      
+
       const keys = await storage.getKeysByDiscordId(String(discordId));
       return res.json({ keys: keys.map(k => k.keyCode) });
     } catch (error) {
@@ -195,7 +195,7 @@ export async function registerRoutes(
     try {
       const { keyCode } = req.body;
       if (!keyCode) return res.status(400).json({ ok: false });
-      
+
       const key = await storage.getKeyByCode(keyCode.toUpperCase());
       if (!key) return res.status(404).json({ ok: false });
 
@@ -274,7 +274,7 @@ export async function registerRoutes(
         });
         return res.status(401).json({ message: "Unauthorized" });
       }
-      
+
       const txId =
         payload.transactionId ||
         payload.transaction_id ||
@@ -340,7 +340,7 @@ export async function registerRoutes(
     try {
       const data = loginSchema.parse(req.body);
       const admin = await storage.getAdminByUsername(data.username);
-      
+
       if (!admin) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -364,7 +364,7 @@ export async function registerRoutes(
   app.post("/api/auth/change-password", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const { currentPassword, newPassword } = req.body;
-      
+
       if (!currentPassword || !newPassword) {
         return res.status(400).json({ message: "Current and new password required" });
       }
@@ -423,7 +423,7 @@ export async function registerRoutes(
 
       try {
         await resend.emails.send({
-          from: "King Vypers <onboarding@resend.dev>",
+          from: "King Vypers <noreply@kingvypers.site>",
           to: user.email,
           subject: "Verifikasi Email King Vypers",
           html: `<p>Kode verifikasi Anda adalah: <strong>${code}</strong></p>`
@@ -487,17 +487,17 @@ export async function registerRoutes(
     try {
       const { email, code } = req.body;
       if (!email || !code) return res.status(400).json({ message: "Email dan code wajib diisi" });
-      
+
       const user = await storage.getUserByEmail(email.trim().toLowerCase());
       if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
-      
+
       const otp = await storage.getOtp(user.id, "verification", String(code));
       if (!otp) return res.status(400).json({ message: "Kode tidak valid" });
       if (new Date() > new Date(otp.expiresAt)) return res.status(400).json({ message: "Kode sudah kadaluarsa" });
-      
+
       await storage.verifyUserEmail(user.id);
       await storage.deleteOtps(user.id, "verification");
-      
+
       const token = jwt.sign({ userId: user.id }, USER_JWT_SECRET, { expiresIn: "7d" });
       return res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
     } catch (error) {
@@ -510,13 +510,13 @@ export async function registerRoutes(
     try {
       const { email } = req.body;
       if (!email) return res.status(400).json({ message: "Email wajib diisi" });
-      
+
       const user = await storage.getUserByEmail(email.trim().toLowerCase());
       if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
       if ((user as any).isEmailVerified === 1) return res.status(400).json({ message: "Email sudah diverifikasi" });
-      
+
       await storage.deleteOtps(user.id, "verification");
-      
+
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       await storage.createOtp({
         userId: user.id,
@@ -527,7 +527,7 @@ export async function registerRoutes(
 
       try {
         await resend.emails.send({
-          from: "King Vypers <onboarding@resend.dev>",
+          from: "King Vypers <noreply@kingvypers.site>",
           to: user.email,
           subject: "Verifikasi Email (Kirim Ulang)",
           html: `<p>Kode verifikasi Anda adalah: <strong>${code}</strong></p>`
@@ -535,7 +535,7 @@ export async function registerRoutes(
       } catch (err) {
         console.error("Resend error:", err);
       }
-      
+
       return res.json({ message: "Kode verifikasi telah dikirim ulang" });
     } catch (error) {
       console.error("Resend verification error:", error);
@@ -547,12 +547,12 @@ export async function registerRoutes(
     try {
       const { email } = req.body;
       if (!email) return res.status(400).json({ message: "Email wajib diisi" });
-      
+
       const user = await storage.getUserByEmail(email.trim().toLowerCase());
       if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
-      
+
       await storage.deleteOtps(user.id, "reset_password");
-      
+
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       await storage.createOtp({
         userId: user.id,
@@ -563,7 +563,7 @@ export async function registerRoutes(
 
       try {
         await resend.emails.send({
-          from: "King Vypers <onboarding@resend.dev>",
+          from: "King Vypers <noreply@kingvypers.site>",
           to: user.email,
           subject: "Reset Password",
           html: `<p>Kode reset password Anda adalah: <strong>${code}</strong></p>`
@@ -571,7 +571,7 @@ export async function registerRoutes(
       } catch (err) {
         console.error("Resend error:", err);
       }
-      
+
       return res.json({ message: "Kode reset password telah dikirim" });
     } catch (error) {
       console.error("Forgot password error:", error);
@@ -584,18 +584,18 @@ export async function registerRoutes(
       const { email, code, newPassword } = req.body;
       if (!email || !code || !newPassword) return res.status(400).json({ message: "Data tidak lengkap" });
       if (newPassword.length < 6) return res.status(400).json({ message: "Password minimal 6 karakter" });
-      
+
       const user = await storage.getUserByEmail(email.trim().toLowerCase());
       if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
-      
+
       const otp = await storage.getOtp(user.id, "reset_password", String(code));
       if (!otp) return res.status(400).json({ message: "Kode tidak valid" });
       if (new Date() > new Date(otp.expiresAt)) return res.status(400).json({ message: "Kode sudah kadaluarsa" });
-      
+
       const newHash = await bcrypt.hash(newPassword, 10);
       await storage.updateUserPassword(user.id, newHash);
       await storage.deleteOtps(user.id, "reset_password");
-      
+
       return res.json({ message: "Password berhasil diubah" });
     } catch (error) {
       console.error("Reset password error:", error);
@@ -728,16 +728,16 @@ export async function registerRoutes(
         createdAt: o.createdAt,
         payment: o.paymentProvider
           ? {
-              provider: o.paymentProvider,
-              orderId: o.paymentOrderId,
-              linkCode: o.paymentLinkCode,
-              url: o.paymentLinkUrl,
-              qrString: o.paymentQrString,
-              originalAmount: o.paymentOriginalAmount,
-              totalAmount: o.paymentTotalAmount,
-              uniqueNominal: o.paymentUniqueNominal,
-              expiresAt: o.paymentExpiresAt,
-            }
+            provider: o.paymentProvider,
+            orderId: o.paymentOrderId,
+            linkCode: o.paymentLinkCode,
+            url: o.paymentLinkUrl,
+            qrString: o.paymentQrString,
+            originalAmount: o.paymentOriginalAmount,
+            totalAmount: o.paymentTotalAmount,
+            uniqueNominal: o.paymentUniqueNominal,
+            expiresAt: o.paymentExpiresAt,
+          }
           : null,
       }));
       return res.json({ orders: payload });
@@ -1193,10 +1193,10 @@ export async function registerRoutes(
       const wantsPagination = limitRaw !== undefined || offsetRaw !== undefined;
       const rows = wantsPagination
         ? await storage.getOrdersPaginated(
-            Math.min(100, Math.max(1, parseInt(String(limitRaw ?? "20")) || 20)),
-            Math.max(0, parseInt(String(offsetRaw ?? "0")) || 0),
-            { status },
-          )
+          Math.min(100, Math.max(1, parseInt(String(limitRaw ?? "20")) || 20)),
+          Math.max(0, parseInt(String(offsetRaw ?? "0")) || 0),
+          { status },
+        )
         : await storage.getAllOrders();
       return res.json({
         orders: rows.map((o) => ({
@@ -1208,16 +1208,16 @@ export async function registerRoutes(
           package: o.package ? { id: o.package.id, title: o.package.title } : null,
           payment: o.paymentProvider
             ? {
-                provider: o.paymentProvider,
-                orderId: o.paymentOrderId,
-                linkCode: o.paymentLinkCode,
-                url: o.paymentLinkUrl,
-                qrString: o.paymentQrString,
-                originalAmount: o.paymentOriginalAmount,
-                totalAmount: o.paymentTotalAmount,
-                uniqueNominal: o.paymentUniqueNominal,
-                expiresAt: o.paymentExpiresAt,
-              }
+              provider: o.paymentProvider,
+              orderId: o.paymentOrderId,
+              linkCode: o.paymentLinkCode,
+              url: o.paymentLinkUrl,
+              qrString: o.paymentQrString,
+              originalAmount: o.paymentOriginalAmount,
+              totalAmount: o.paymentTotalAmount,
+              uniqueNominal: o.paymentUniqueNominal,
+              expiresAt: o.paymentExpiresAt,
+            }
             : null,
         })),
         ...(wantsPagination ? { total: await storage.getOrdersTotal({ status }) } : {}),
@@ -1323,7 +1323,7 @@ export async function registerRoutes(
       for (let i = 0; i < data.quantity; i++) {
         let keyCode: string;
         let exists = true;
-        
+
         while (exists) {
           keyCode = generateKeyCode();
           const existing = await storage.getKeyByCode(keyCode);
@@ -1338,7 +1338,7 @@ export async function registerRoutes(
           ...(data.packageId !== undefined ? { packageId: data.packageId } : {}),
           notes: data.notes || null,
         });
-        
+
         generatedKeys.push(key);
 
         await storage.createLog({
@@ -1471,7 +1471,7 @@ export async function registerRoutes(
       const updated = await storage.updateKey(id, {
         hwid: null,
       });
-      
+
       await storage.createLog({
         action: "reset",
         keyId: id,
