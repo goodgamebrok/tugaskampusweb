@@ -320,13 +320,13 @@ export function UserPackages() {
               </div>
             ) : (
               <>
-                <div className="relative overflow-hidden rounded-2xl border border-kv-outline-variant/20 bg-gradient-to-b from-kv-surface to-[#12121A] p-5 shadow-inner">
+                <div className="relative overflow-hidden rounded-2xl border border-kv-outline-variant/20 bg-white p-4 shadow-sm">
                   {qrImageUrl ? (
                     <a href={qrImageUrl} target="_blank" rel="noopener noreferrer" className="block relative group">
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
                         <span className="text-white font-mono text-xs uppercase tracking-widest">Buka di Tab Baru</span>
                       </div>
-                      <img src={qrImageUrl} alt="QRIS" className="mx-auto h-72 w-72 rounded-xl bg-white/5 object-contain shadow-sm" />
+                      <img src={qrImageUrl} alt="QRIS" className="mx-auto h-72 w-72 object-contain" style={{ imageRendering: 'pixelated', background: 'white' }} />
                     </a>
                   ) : (
                     <div className="flex h-72 items-center justify-center text-sm font-mono text-kv-on-surface-variant/70">

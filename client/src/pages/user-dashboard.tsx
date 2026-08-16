@@ -669,13 +669,17 @@ export default function UserDashboard() {
                       </div>
                     ) : (
                       <>
-                        <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-b from-background to-muted/40 p-4">
+                        <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
                           {qrImageUrl ? (
-                            <a href={qrImageUrl} target="_blank" rel="noopener noreferrer" className="block">
+                            <a href={qrImageUrl} target="_blank" rel="noopener noreferrer" className="block relative group">
+                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
+                                <span className="text-white font-mono text-xs uppercase tracking-widest">Buka di Tab Baru</span>
+                              </div>
                               <img
                                 src={qrImageUrl}
                                 alt="QRIS"
-                                className="mx-auto h-72 w-72 rounded-xl bg-background object-contain shadow-sm"
+                                className="mx-auto h-72 w-72 object-contain"
+                                style={{ imageRendering: 'pixelated', background: 'white' }}
                               />
                             </a>
                           ) : (
