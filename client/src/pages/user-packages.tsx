@@ -326,7 +326,7 @@ export function UserPackages() {
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl z-10 backdrop-blur-sm">
                         <span className="text-white font-mono text-xs uppercase tracking-widest">Buka di Tab Baru</span>
                       </div>
-                      <img src={qrImageUrl} alt="QRIS" className="mx-auto h-72 w-72 object-contain" style={{ imageRendering: 'pixelated', background: 'white' }} />
+                      <img src={qrImageUrl} alt="QRIS" className="qris-img mx-auto h-72 w-72 object-contain" style={{ imageRendering: 'pixelated', background: 'white' }} />
                     </a>
                   ) : (
                     <div className="flex h-72 items-center justify-center text-sm font-mono text-kv-on-surface-variant/70">

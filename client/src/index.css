@@ -354,4 +354,12 @@
   .kv-glow {
     box-shadow: 0 0 20px 0 rgba(201, 191, 255, 0.3);
   }
+
+  /* Force QRIS images to render as true black & white — prevent purple body
+     gradient from bleeding into the QR code and making it unscannable */
+  .qris-img {
+    filter: grayscale(1) contrast(1.5) brightness(1);
+    background: white !important;
+    display: block;
+  }
 }

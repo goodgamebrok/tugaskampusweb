@@ -678,7 +678,7 @@ export default function UserDashboard() {
                               <img
                                 src={qrImageUrl}
                                 alt="QRIS"
-                                className="mx-auto h-72 w-72 object-contain"
+                                className="qris-img mx-auto h-72 w-72 object-contain"
                                 style={{ imageRendering: 'pixelated', background: 'white' }}
                               />
                             </a>
