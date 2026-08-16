@@ -24,6 +24,7 @@ function getYoutubeId(url: string | null): string {
 export default function Landing() {
   const [videoModal, setVideoModal] = useState<{ id: number; vidId: string } | null>(null);
   const [activeSection, setActiveSection] = useState("home");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const words = useMemo(() => ["Game", "Play", "Experience"], []);
   const [currentWordIdx, setCurrentWordIdx] = useState(0);
@@ -234,10 +235,46 @@ export default function Landing() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button className="md:hidden text-kv-on-surface-variant hover:text-kv-primary transition-colors p-2">
-            <span className="material-symbols-outlined text-2xl">menu</span>
+          <button
+            className="md:hidden text-kv-on-surface-variant hover:text-kv-primary transition-colors p-2"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <span className="material-symbols-outlined text-2xl">
+              {mobileMenuOpen ? "close" : "menu"}
+            </span>
           </button>
         </div>
+
+        {/* Mobile Drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-kv-surface/95 backdrop-blur-xl border-t border-kv-outline-variant/10 px-6 pb-6 pt-4 flex flex-col gap-2">
+            {[
+              { id: "home", label: "Home", href: "#" },
+              { id: "features", label: "Features", href: "#features" },
+              { id: "pricing", label: "Pricing", href: "#pricing" },
+              { id: "games", label: "Games", href: "#games" },
+              { id: "showcase", label: "Showcase", href: "#showcase" },
+            ].map((link) => (
+              <a
+                key={link.id}
+                href={link.href}
+                onClick={(e) => { scrollTo(e, link.id); setMobileMenuOpen(false); }}
+                className="font-mono text-sm py-3 px-4 rounded-xl text-kv-on-surface-variant hover:text-kv-primary hover:bg-kv-primary/10 transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+            <div className="border-t border-kv-outline-variant/10 mt-2 pt-4 flex flex-col gap-3">
+              <Link href="/login" className="font-mono text-sm py-3 px-4 rounded-xl text-center text-kv-on-surface-variant hover:text-kv-primary hover:bg-kv-primary/10 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                Login
+              </Link>
+              <Link href="/beli" className="kv-btn-primary text-white font-mono text-sm px-6 py-3 rounded-full font-bold uppercase tracking-wider text-center" onClick={() => setMobileMenuOpen(false)}>
+                Get Premium
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main>
@@ -797,27 +834,27 @@ export default function Landing() {
                 <span className="font-mono text-kv-label text-kv-primary uppercase tracking-widest mb-2 block">SOCIAL MEDIA</span>
                 <p className="text-sm text-kv-on-surface-variant mb-6">Terhubung dengan saya di platform berikut</p>
                 <div className="grid grid-cols-3 gap-4 mb-8">
-                  <a className="bg-kv-surface-container-high hover:bg-kv-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-kv-outline-variant/10" href="#">
+                  <a className="bg-kv-surface-container-high hover:bg-kv-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-kv-outline-variant/10" href="https://discord.gg/XmWf3YQPpZ" target="_blank" rel="noopener noreferrer">
                     <span className="material-symbols-outlined text-[#5865F2] text-3xl">forum</span>
                     <span className="text-xs font-semibold text-kv-on-surface">Discord</span>
                     <span className="text-[10px] text-kv-on-surface-variant">Join Server</span>
                   </a>
-                  <a className="bg-kv-surface-container-high hover:bg-kv-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-kv-outline-variant/10" href="#">
+                  <a className="bg-kv-surface-container-high hover:bg-kv-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-kv-outline-variant/10" href="https://www.youtube.com/@KingVypers" target="_blank" rel="noopener noreferrer">
                     <span className="material-symbols-outlined text-[#FF0000] text-3xl">play_circle</span>
                     <span className="text-xs font-semibold text-kv-on-surface">YouTube</span>
                     <span className="text-[10px] text-kv-on-surface-variant">Subscribe</span>
                   </a>
-                  <a className="bg-kv-surface-container-high hover:bg-kv-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-kv-outline-variant/10" href="#">
+                  <a className="bg-kv-surface-container-high hover:bg-kv-surface-bright p-4 rounded-xl flex flex-col items-center justify-center gap-2 transition-colors border border-kv-outline-variant/10" href="https://www.tiktok.com/@kingvyperr" target="_blank" rel="noopener noreferrer">
                     <span className="material-symbols-outlined text-kv-on-surface text-3xl">music_note</span>
                     <span className="text-xs font-semibold text-kv-on-surface">TikTok</span>
                     <span className="text-[10px] text-kv-on-surface-variant">Follow</span>
                   </a>
                 </div>
               </div>
-              <button className="w-full kv-btn-primary text-white font-mono text-kv-label py-3 rounded-xl font-bold flex items-center justify-center gap-2 uppercase tracking-wide">
+              <a href="https://discord.gg/XmWf3YQPpZ" target="_blank" rel="noopener noreferrer" className="w-full kv-btn-primary text-white font-mono text-kv-label py-3 rounded-xl font-bold flex items-center justify-center gap-2 uppercase tracking-wide">
                 <span className="material-symbols-outlined text-sm">groups</span>
                 Join Semua
-              </button>
+              </a>
             </motion.div>
             
             {/* Developer Team */}

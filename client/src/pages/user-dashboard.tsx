@@ -249,7 +249,7 @@ export default function UserDashboard() {
       setPaymentSuccess(true);
       toast({ title: "Pembayaran berhasil", description: "Key sudah otomatis masuk ke akun kamu." });
       queryClient.invalidateQueries({ queryKey: ["/api/user/keys"] });
-      
+
       const timer = setTimeout(() => {
         setPaymentDialogOpen(false);
         setPaymentSuccess(false);
