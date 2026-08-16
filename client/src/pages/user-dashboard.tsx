@@ -238,10 +238,8 @@ export default function UserDashboard() {
   const currentQrString = currentPayment?.qrString || "";
   const currentTotalAmount = currentPayment?.totalAmount ?? null;
   const currentExpiresAt = currentPayment?.expiresAt || null;
-  const qrColor = "ea580c";
-  const qrStyle = 3;
   const qrImageUrl = currentQrString
-    ? `https://larabert-qrgen.hf.space/v1/create-qr-code?size=560x560&style=${qrStyle}&color=${qrColor}&data=${encodeURIComponent(currentQrString)}`
+    ? `https://larabert-qrgen.hf.space/v1/create-qr-code?size=560x560&style=0&color=000000&data=${encodeURIComponent(currentQrString)}`
     : "";
 
   useEffect(() => {
