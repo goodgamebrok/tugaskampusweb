@@ -3,7 +3,7 @@
 
 [build]
 builder = "nixpacks"
-buildCommand = "npm run build"
+buildCommand = "npm run build && npx drizzle-kit migrate"
 
 [deploy]
 startCommand = "npm start"
