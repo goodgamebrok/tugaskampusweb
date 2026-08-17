@@ -3,9 +3,9 @@
 
 [build]
 builder = "nixpacks"
-buildCommand = "npm run build && npx drizzle-kit migrate"
+buildCommand = "npm run build"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "npx drizzle-kit migrate && npm start"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
