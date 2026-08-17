@@ -2478,13 +2478,25 @@ export async function registerRoutes(
   // Public Raw Endpoint
   app.get("/raw/:name", async (req, res) => {
     try {
+      const userAgent = (req.headers["user-agent"] || "").toLowerCase();
+      
+      // Deteksi browser biasa (Chrome, Firefox, Safari, dll)
+      const isBrowser = userAgent.includes("mozilla") || userAgent.includes("chrome") || userAgent.includes("safari") || userAgent.includes("edge");
+      
+      // Izinkan eksekutor Roblox (kalau mereka secara eksplisit pakai nama mereka)
+      const isRoblox = userAgent.includes("roblox") || userAgent.includes("synapse") || userAgent.includes("krnl") || userAgent.includes("fluxus") || userAgent.includes("delta");
+      
+      if (isBrowser && !isRoblox) {
+        return res.status(403).send("-- Access Denied: This script can only be executed via Roblox Executor (game:HttpGet).");
+      }
+
       const name = req.params.name;
       const script = await storage.getScriptByName(name);
-      if (!script) return res.status(404).send("404: Script not found");
+      if (!script) return res.status(404).send("-- 404: Script not found");
       res.type('text/plain').send(script.content);
     } catch (error) {
       console.error("Raw script error:", error);
-      res.status(500).send("500: Internal server error");
+      res.status(500).send("-- 500: Internal server error");
     }
   });
   // ─────────────────────────────────────────────────────────────────────────
