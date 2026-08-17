@@ -2487,7 +2487,16 @@ export async function registerRoutes(
       const isRoblox = userAgent.includes("roblox") || userAgent.includes("synapse") || userAgent.includes("krnl") || userAgent.includes("fluxus") || userAgent.includes("delta");
       
       if (isBrowser && !isRoblox) {
-        return res.status(403).send("-- Access Denied: This script can only be executed via Roblox Executor (game:HttpGet).");
+        // Berikan fake obfuscated script ke browser biar mereka pusing
+        const fakeObfuscated = `-- Obfuscated with MoonSec V3 / Protected by KingVypers
+local IllIllII = {12, 54, 12, 76, 23, 98, 11}
+local llIIllII = "ERROR_UNAUTHORIZED_ENVIRONMENT"
+function IIllIIll(IllllI) return setmetatable({}, {__index = function(t, k) while true do end end}) end
+local Vypers = IIllIIll(IllIllII)
+print("[KingVypers] Invalid execution environment detected. Aborting.")
+while true do end
+`;
+        return res.type('text/plain').send(fakeObfuscated);
       }
 
       const name = req.params.name;
