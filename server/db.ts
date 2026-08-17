@@ -15,3 +15,15 @@ if (!process.env.DATABASE_URL) {
 
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle(pool, { schema });
+
+// Auto-migrate folder column for scripts table
+pool.query(`
+  DO $$ BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'scripts' AND column_name = 'folder'
+    ) THEN
+      ALTER TABLE "scripts" ADD COLUMN "folder" text;
+    END IF;
+  END $$;
+`).catch(err => console.error("Auto-migrate folder column failed:", err));
