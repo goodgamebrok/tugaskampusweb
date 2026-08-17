@@ -34,6 +34,9 @@ import {
   type AppSetting,
   type Otp,
   type InsertOtp,
+  scripts,
+  type Script,
+  type InsertScript,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, gte, and, sql, like, or, isNull, isNotNull } from "drizzle-orm";
@@ -169,6 +172,16 @@ export interface IStorage {
 
   getSetting(key: string): Promise<AppSetting | undefined>;
   setSetting(key: string, value: string | null): Promise<AppSetting>;
+
+  // Scripts
+  getAllScripts(): Promise<Script[]>;
+  getScriptsPaginated(limit: number, offset: number, filters?: { search?: string }): Promise<Script[]>;
+  getScriptsTotal(filters?: { search?: string }): Promise<number>;
+  getScript(id: number): Promise<Script | undefined>;
+  getScriptByName(name: string): Promise<Script | undefined>;
+  createScript(data: InsertScript): Promise<Script>;
+  updateScript(id: number, data: Partial<Script>): Promise<Script | undefined>;
+  deleteScript(id: number): Promise<boolean>;
 }
 
 export class HttpError extends Error {
@@ -1353,12 +1366,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSetting(key: string): Promise<AppSetting | undefined> {
-    const [row] = await db.select().from(appSettings).where(eq(appSettings.key, key));
-    return row || undefined;
+    const [setting] = await db.select().from(appSettings).where(eq(appSettings.key, key));
+    return setting || undefined;
   }
 
   async setSetting(key: string, value: string | null): Promise<AppSetting> {
-    const [row] = await db
+    const [setting] = await db
       .insert(appSettings)
       .values({ key, value, updatedAt: new Date() })
       .onConflictDoUpdate({
@@ -1366,7 +1379,60 @@ export class DatabaseStorage implements IStorage {
         set: { value, updatedAt: new Date() },
       })
       .returning();
-    return row;
+    return setting;
+  }
+
+  // Scripts
+  async getAllScripts(): Promise<Script[]> {
+    return db.select().from(scripts).orderBy(desc(scripts.createdAt));
+  }
+
+  async getScriptsPaginated(limit: number, offset: number, filters?: { search?: string }): Promise<Script[]> {
+    const conditions = [];
+    if (filters?.search?.trim()) {
+      const term = `%${filters.search.trim()}%`;
+      conditions.push(like(scripts.name, term));
+    }
+    const where = conditions.length ? and(...conditions) : undefined;
+    const base = db.select().from(scripts).orderBy(desc(scripts.createdAt)).limit(limit).offset(offset);
+    return where ? base.where(where) : base;
+  }
+
+  async getScriptsTotal(filters?: { search?: string }): Promise<number> {
+    const conditions = [];
+    if (filters?.search?.trim()) {
+      const term = `%${filters.search.trim()}%`;
+      conditions.push(like(scripts.name, term));
+    }
+    const where = conditions.length ? and(...conditions) : undefined;
+    const base = db.select({ count: sql<number>`count(*)` }).from(scripts);
+    const result = where ? await base.where(where) : await base;
+    return Number(result[0].count);
+  }
+
+  async getScript(id: number): Promise<Script | undefined> {
+    const [script] = await db.select().from(scripts).where(eq(scripts.id, id));
+    return script || undefined;
+  }
+
+  async getScriptByName(name: string): Promise<Script | undefined> {
+    const [script] = await db.select().from(scripts).where(eq(scripts.name, name));
+    return script || undefined;
+  }
+
+  async createScript(data: InsertScript): Promise<Script> {
+    const [created] = await db.insert(scripts).values(data).returning();
+    return created;
+  }
+
+  async updateScript(id: number, data: Partial<Script>): Promise<Script | undefined> {
+    const [updated] = await db.update(scripts).set({ ...data, updatedAt: new Date() }).where(eq(scripts.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async deleteScript(id: number): Promise<boolean> {
+    const [deleted] = await db.delete(scripts).where(eq(scripts.id, id)).returning();
+    return !!deleted;
   }
 }
 

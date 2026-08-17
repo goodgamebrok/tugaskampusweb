@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Key, LayoutDashboard, Plus, Banknote, Settings, LogOut, ExternalLink, LayoutGrid, Package, Users, ShoppingCart, Star, Gamepad2, User } from "lucide-react";
+import { Key, LayoutDashboard, Plus, Banknote, Settings, LogOut, ExternalLink, LayoutGrid, Package, Users, ShoppingCart, Star, Gamepad2, User, TerminalSquare } from "lucide-react";
 import { HeaderLogo } from "@/components/header-logo";
 import {
   Sidebar,
@@ -28,6 +28,7 @@ const menuItems = [
   { title: "Testimonials", url: "/kings/testimonials", icon: Star },
   { title: "Game Support", url: "/kings/game-support", icon: Gamepad2 },
   { title: "Users", url: "/kings/users", icon: User },
+  { title: "Scripts", url: "/kings/scripts", icon: TerminalSquare },
   { title: "Settings", url: "/kings/settings", icon: Settings },
 ];
 

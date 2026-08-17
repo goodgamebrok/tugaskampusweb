@@ -171,6 +171,14 @@ export const gameSupport = pgTable("game_support", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const scripts = pgTable("scripts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const keysRelations = relations(keys, ({ many }) => ({
   logs: many(logs),
 }));
@@ -322,6 +330,12 @@ export const insertGameSupportSchema = createInsertSchema(gameSupport).omit({
   status: z.enum(["ready", "maintenance", "comingsoon"]).optional(),
 });
 
+export const insertScriptSchema = createInsertSchema(scripts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Admin = typeof admins.$inferSelect;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type User = typeof users.$inferSelect;
@@ -345,3 +359,5 @@ export type InsertGameSupport = z.infer<typeof insertGameSupportSchema>;
 export type AppSetting = typeof appSettings.$inferSelect;
 export type Otp = typeof otps.$inferSelect;
 export type InsertOtp = z.infer<typeof insertOtpSchema>;
+export type Script = typeof scripts.$inferSelect;
+export type InsertScript = z.infer<typeof insertScriptSchema>;

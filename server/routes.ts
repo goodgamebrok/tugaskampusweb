@@ -2411,6 +2411,84 @@ export async function registerRoutes(
     }
   });
 
+  // ─── Scripts API ─────────────────────────────────────────────────────────
+  app.get("/api/scripts", authMiddleware, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const search = req.query.search as string | undefined;
+      const offset = (page - 1) * limit;
+
+      const scripts = await storage.getScriptsPaginated(limit, offset, { search });
+      const total = await storage.getScriptsTotal({ search });
+      res.json({ data: scripts, total, page, totalPages: Math.ceil(total / limit) });
+    } catch (error) {
+      console.error("Get scripts error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/scripts", authMiddleware, async (req, res) => {
+    try {
+      const { name, content } = req.body;
+      if (!name || !content) return res.status(400).json({ message: "Name and content are required" });
+      const existing = await storage.getScriptByName(name);
+      if (existing) return res.status(400).json({ message: "Script with this name already exists" });
+      const script = await storage.createScript({ name, content });
+      res.status(201).json(script);
+    } catch (error) {
+      console.error("Create script error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put("/api/scripts/:id", authMiddleware, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+      const { name, content } = req.body;
+      if (!name || !content) return res.status(400).json({ message: "Name and content are required" });
+      const script = await storage.getScript(id);
+      if (!script) return res.status(404).json({ message: "Not found" });
+      if (script.name !== name) {
+        const existing = await storage.getScriptByName(name);
+        if (existing) return res.status(400).json({ message: "Script with this name already exists" });
+      }
+      const updated = await storage.updateScript(id, { name, content });
+      res.json(updated);
+    } catch (error) {
+      console.error("Update script error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.delete("/api/scripts/:id", authMiddleware, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+      const ok = await storage.deleteScript(id);
+      if (!ok) return res.status(404).json({ message: "Not found" });
+      res.json({ message: "Deleted" });
+    } catch (error) {
+      console.error("Delete script error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Public Raw Endpoint
+  app.get("/raw/:name", async (req, res) => {
+    try {
+      const name = req.params.name;
+      const script = await storage.getScriptByName(name);
+      if (!script) return res.status(404).send("404: Script not found");
+      res.type('text/plain').send(script.content);
+    } catch (error) {
+      console.error("Raw script error:", error);
+      res.status(500).send("500: Internal server error");
+    }
+  });
+  // ─────────────────────────────────────────────────────────────────────────
+
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
