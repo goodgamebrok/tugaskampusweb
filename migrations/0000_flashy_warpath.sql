@@ -1,7 +1,19 @@
-CREATE TYPE "public"."key_status" AS ENUM('unused', 'available', 'sold', 'active', 'expired', 'blacklisted');--> statement-breakpoint
-CREATE TYPE "public"."order_status" AS ENUM('pending', 'waiting_verification', 'paid', 'rejected', 'expired');--> statement-breakpoint
-CREATE TYPE "public"."showcase_type" AS ENUM('free', 'premium');--> statement-breakpoint
-CREATE TABLE "admins" (
+DO $$ BEGIN
+    CREATE TYPE "public"."key_status" AS ENUM('unused', 'available', 'sold', 'active', 'expired', 'blacklisted');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    CREATE TYPE "public"."order_status" AS ENUM('pending', 'waiting_verification', 'paid', 'rejected', 'expired');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    CREATE TYPE "public"."showcase_type" AS ENUM('free', 'premium');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "admins" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"username" text NOT NULL,
 	"password_hash" text NOT NULL,
@@ -9,13 +21,13 @@ CREATE TABLE "admins" (
 	CONSTRAINT "admins_username_unique" UNIQUE("username")
 );
 --> statement-breakpoint
-CREATE TABLE "app_settings" (
+CREATE TABLE IF NOT EXISTS "app_settings" (
 	"key" varchar(100) PRIMARY KEY NOT NULL,
 	"value" text,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "game_support" (
+CREATE TABLE IF NOT EXISTS "game_support" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"game_name" text NOT NULL,
 	"logo_url" text NOT NULL,
@@ -24,7 +36,7 @@ CREATE TABLE "game_support" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "keys" (
+CREATE TABLE IF NOT EXISTS "keys" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"key_code" varchar(19) NOT NULL,
 	"duration_months" integer NOT NULL,
@@ -48,7 +60,7 @@ CREATE TABLE "keys" (
 	CONSTRAINT "keys_key_code_unique" UNIQUE("key_code")
 );
 --> statement-breakpoint
-CREATE TABLE "logs" (
+CREATE TABLE IF NOT EXISTS "logs" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"action" text NOT NULL,
 	"key_id" integer,
@@ -56,7 +68,7 @@ CREATE TABLE "logs" (
 	"timestamp" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "orders" (
+CREATE TABLE IF NOT EXISTS "orders" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
 	"package_id" integer NOT NULL,
@@ -74,7 +86,7 @@ CREATE TABLE "orders" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "otps" (
+CREATE TABLE IF NOT EXISTS "otps" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
 	"code" varchar(6) NOT NULL,
@@ -83,7 +95,7 @@ CREATE TABLE "otps" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "packages" (
+CREATE TABLE IF NOT EXISTS "packages" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
 	"duration_days" integer NOT NULL,
@@ -100,7 +112,7 @@ CREATE TABLE "packages" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "showcase" (
+CREATE TABLE IF NOT EXISTS "showcase" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"script_name" text NOT NULL,
 	"game_name" text NOT NULL,
@@ -121,7 +133,7 @@ CREATE TABLE "showcase" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "teams" (
+CREATE TABLE IF NOT EXISTS "teams" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"full_name" text NOT NULL,
 	"role" text NOT NULL,
@@ -140,7 +152,7 @@ CREATE TABLE "teams" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "testimonials" (
+CREATE TABLE IF NOT EXISTS "testimonials" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
 	"message" text NOT NULL,
@@ -150,7 +162,7 @@ CREATE TABLE "testimonials" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"username" text NOT NULL,
 	"email" text NOT NULL,
@@ -167,11 +179,43 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-ALTER TABLE "keys" ADD CONSTRAINT "keys_package_id_packages_id_fk" FOREIGN KEY ("package_id") REFERENCES "public"."packages"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "keys" ADD CONSTRAINT "keys_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "keys" ADD CONSTRAINT "keys_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "logs" ADD CONSTRAINT "logs_key_id_keys_id_fk" FOREIGN KEY ("key_id") REFERENCES "public"."keys"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "orders" ADD CONSTRAINT "orders_package_id_packages_id_fk" FOREIGN KEY ("package_id") REFERENCES "public"."packages"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "otps" ADD CONSTRAINT "otps_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "testimonials" ADD CONSTRAINT "testimonials_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+DO $$ BEGIN
+    ALTER TABLE "keys" ADD CONSTRAINT "keys_package_id_packages_id_fk" FOREIGN KEY ("package_id") REFERENCES "public"."packages"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "keys" ADD CONSTRAINT "keys_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "keys" ADD CONSTRAINT "keys_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "logs" ADD CONSTRAINT "logs_key_id_keys_id_fk" FOREIGN KEY ("key_id") REFERENCES "public"."keys"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "orders" ADD CONSTRAINT "orders_package_id_packages_id_fk" FOREIGN KEY ("package_id") REFERENCES "public"."packages"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "otps" ADD CONSTRAINT "otps_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+    ALTER TABLE "testimonials" ADD CONSTRAINT "testimonials_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
