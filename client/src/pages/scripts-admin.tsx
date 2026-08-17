@@ -59,9 +59,7 @@ export default function ScriptsAdmin() {
   const { data, isLoading } = useQuery<{ data: Script[]; total: number }>({
     queryKey: ["/api/scripts", page],
     queryFn: async () => {
-      const res = await fetch(`/api/scripts?limit=${pageSize}&page=${page}`);
-      if (!res.ok) throw new Error(await res.text());
-      return res.json();
+      return apiRequest("GET", `/api/scripts?limit=${pageSize}&page=${page}`);
     },
   });
   
