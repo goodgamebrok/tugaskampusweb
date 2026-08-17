@@ -1488,6 +1488,48 @@ export async function registerRoutes(
   app.post("/api/validate-key", keyValidationLimiter, async (req, res) => {
     try {
       const data = validateKeySchema.parse(req.body);
+      
+      // -- Trial Key Logic --
+      const trialKeySetting = await storage.getSetting("trial_key");
+      if (trialKeySetting && trialKeySetting.value === data.key) {
+        const expiresAtSetting = await storage.getSetting("trial_expires_at");
+        if (expiresAtSetting && expiresAtSetting.value && new Date(expiresAtSetting.value) < new Date()) {
+          return res.status(403).json({ success: false, message: "Trial key expired" });
+        }
+        
+        const maxSlotsSetting = await storage.getSetting("trial_max_slots");
+        const maxSlots = maxSlotsSetting ? parseInt(maxSlotsSetting.value || "100") : 100;
+        
+        let device = await storage.getTrialDeviceByHwid(data.hwid);
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+        let needsSlot = true;
+        
+        if (device && device.isActive === 1 && new Date(device.lastSeenAt) >= tenMinutesAgo) {
+          needsSlot = false; // Already occupies a valid slot
+        }
+        
+        if (needsSlot) {
+          const activeCount = await storage.getTrialDevicesTotal({ isActive: 1 });
+          if (activeCount >= maxSlots) {
+            return res.status(403).json({ success: false, message: "Trial slots are full. Please try again later." });
+          }
+        }
+        
+        if (!device) {
+          await storage.createTrialDevice({ hwid: data.hwid, isActive: 1 });
+        } else {
+          await storage.updateTrialDevice(data.hwid, { isActive: 1, lastSeenAt: new Date() });
+        }
+        
+        return res.json({
+          success: true,
+          status: "active",
+          isTrial: true,
+          message: "Free trial slot acquired. Send heartbeat to /api/trial/heartbeat every 5 minutes."
+        });
+      }
+      // -- End Trial Key Logic --
+
       const key = await storage.getKeyByCode(data.key);
 
       if (!key) {
