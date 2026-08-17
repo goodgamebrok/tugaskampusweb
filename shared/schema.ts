@@ -180,6 +180,14 @@ export const scripts = pgTable("scripts", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const trialDevices = pgTable("trial_devices", {
+  id: serial("id").primaryKey(),
+  hwid: text("hwid").notNull().unique(),
+  firstUsedAt: timestamp("first_used_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
+  isActive: integer("is_active").default(0).notNull(), // 1 for active, 0 for inactive
+});
+
 export const keysRelations = relations(keys, ({ many }) => ({
   logs: many(logs),
 }));
@@ -337,6 +345,12 @@ export const insertScriptSchema = createInsertSchema(scripts).omit({
   updatedAt: true,
 });
 
+export const insertTrialDeviceSchema = createInsertSchema(trialDevices).omit({
+  id: true,
+  firstUsedAt: true,
+  lastSeenAt: true,
+});
+
 export type Admin = typeof admins.$inferSelect;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type User = typeof users.$inferSelect;
@@ -362,3 +376,5 @@ export type Otp = typeof otps.$inferSelect;
 export type InsertOtp = z.infer<typeof insertOtpSchema>;
 export type Script = typeof scripts.$inferSelect;
 export type InsertScript = z.infer<typeof insertScriptSchema>;
+export type TrialDevice = typeof trialDevices.$inferSelect;
+export type InsertTrialDevice = z.infer<typeof insertTrialDeviceSchema>;

@@ -37,6 +37,9 @@ import {
   scripts,
   type Script,
   type InsertScript,
+  trialDevices,
+  type TrialDevice,
+  type InsertTrialDevice,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, gte, and, sql, like, or, isNull, isNotNull } from "drizzle-orm";
@@ -182,6 +185,14 @@ export interface IStorage {
   createScript(data: InsertScript): Promise<Script>;
   updateScript(id: number, data: Partial<Script>): Promise<Script | undefined>;
   deleteScript(id: number): Promise<boolean>;
+
+  // Trial Devices
+  getTrialDevicesPaginated(limit: number, offset: number, filters?: { search?: string, isActive?: number }): Promise<TrialDevice[]>;
+  getTrialDevicesTotal(filters?: { search?: string, isActive?: number }): Promise<number>;
+  getTrialDeviceByHwid(hwid: string): Promise<TrialDevice | undefined>;
+  createTrialDevice(data: InsertTrialDevice): Promise<TrialDevice>;
+  updateTrialDevice(hwid: string, data: Partial<TrialDevice>): Promise<TrialDevice | undefined>;
+  cleanupInactiveTrialDevices(minutes: number): Promise<number>;
 }
 
 export class HttpError extends Error {
@@ -1433,6 +1444,61 @@ export class DatabaseStorage implements IStorage {
   async deleteScript(id: number): Promise<boolean> {
     const [deleted] = await db.delete(scripts).where(eq(scripts.id, id)).returning();
     return !!deleted;
+  }
+
+  // Trial Devices
+  async getTrialDevicesPaginated(limit: number, offset: number, filters?: { search?: string, isActive?: number }): Promise<TrialDevice[]> {
+    const conditions = [];
+    if (filters?.search?.trim()) {
+      const term = `%${filters.search.trim()}%`;
+      conditions.push(like(trialDevices.hwid, term));
+    }
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(trialDevices.isActive, filters.isActive));
+    }
+    const whereClause = conditions.length ? and(...conditions) : undefined;
+    const base = db.select().from(trialDevices).orderBy(desc(trialDevices.lastSeenAt)).limit(limit).offset(offset);
+    return whereClause ? await base.where(whereClause) : await base;
+  }
+
+  async getTrialDevicesTotal(filters?: { search?: string, isActive?: number }): Promise<number> {
+    const conditions = [];
+    if (filters?.search?.trim()) {
+      const term = `%${filters.search.trim()}%`;
+      conditions.push(like(trialDevices.hwid, term));
+    }
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(trialDevices.isActive, filters.isActive));
+    }
+    const whereClause = conditions.length ? and(...conditions) : undefined;
+    const base = db.select({ count: sql<number>`count(*)` }).from(trialDevices);
+    const result = whereClause ? await base.where(whereClause) : await base;
+    return Number(result[0].count);
+  }
+
+  async getTrialDeviceByHwid(hwid: string): Promise<TrialDevice | undefined> {
+    const [device] = await db.select().from(trialDevices).where(eq(trialDevices.hwid, hwid));
+    return device || undefined;
+  }
+
+  async createTrialDevice(data: InsertTrialDevice): Promise<TrialDevice> {
+    const [created] = await db.insert(trialDevices).values(data).returning();
+    return created;
+  }
+
+  async updateTrialDevice(hwid: string, data: Partial<TrialDevice>): Promise<TrialDevice | undefined> {
+    const [updated] = await db.update(trialDevices).set(data).where(eq(trialDevices.hwid, hwid)).returning();
+    return updated || undefined;
+  }
+
+  async cleanupInactiveTrialDevices(minutes: number): Promise<number> {
+    const result = await db.update(trialDevices)
+      .set({ isActive: 0 })
+      .where(and(
+        eq(trialDevices.isActive, 1),
+        sql`last_seen_at < NOW() - INTERVAL '${sql.raw(minutes.toString())} minutes'`
+      )).returning({ id: trialDevices.id });
+    return result.length;
   }
 }
 

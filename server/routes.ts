@@ -1601,6 +1601,48 @@ export async function registerRoutes(
   app.post("/api/script-execute", scriptExecuteLimiter, async (req, res) => {
     try {
       const data = scriptExecuteSchema.parse(req.body);
+      
+      // -- Trial Key Logic --
+      const trialKeySetting = await storage.getSetting("trial_key");
+      if (trialKeySetting && trialKeySetting.value === data.key) {
+        const expiresAtSetting = await storage.getSetting("trial_expires_at");
+        if (expiresAtSetting && expiresAtSetting.value && new Date(expiresAtSetting.value) < new Date()) {
+          return res.status(403).json({ success: false, message: "Trial key expired" });
+        }
+        
+        const maxSlotsSetting = await storage.getSetting("trial_max_slots");
+        const maxSlots = maxSlotsSetting ? parseInt(maxSlotsSetting.value || "100") : 100;
+        
+        let device = await storage.getTrialDeviceByHwid(data.hwid);
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+        let needsSlot = true;
+        
+        if (device && device.isActive === 1 && new Date(device.lastSeenAt) >= tenMinutesAgo) {
+          needsSlot = false; // Already occupies a valid slot
+        }
+        
+        if (needsSlot) {
+          const activeCount = await storage.getTrialDevicesTotal({ isActive: 1 });
+          if (activeCount >= maxSlots) {
+            return res.status(403).json({ success: false, message: "Trial slots are full. Please try again later." });
+          }
+        }
+        
+        if (!device) {
+          await storage.createTrialDevice({ hwid: data.hwid, isActive: 1 });
+        } else {
+          await storage.updateTrialDevice(data.hwid, { isActive: 1, lastSeenAt: new Date() });
+        }
+        
+        return res.json({
+          success: true,
+          executionCount: 1,
+          isTrial: true,
+          message: "Free trial slot acquired. Send heartbeat to /api/trial/heartbeat every 5 minutes."
+        });
+      }
+      // -- End Trial Key Logic --
+
       const key = await storage.getKeyByCode(data.key);
       if (!key) {
         return res.status(404).json({ success: false, message: "Key not found" });
@@ -2508,6 +2550,82 @@ while true do end
       res.status(500).send("-- 500: Internal server error");
     }
   });
+  // ─── Trial System Routes ───────────────────────────────────────────────
+  app.get("/api/trial/config", authMiddleware, async (req, res) => {
+    try {
+      const trialKey = await storage.getSetting("trial_key");
+      const trialMaxSlots = await storage.getSetting("trial_max_slots");
+      const trialExpiresAt = await storage.getSetting("trial_expires_at");
+      
+      res.json({
+        trialKey: trialKey?.value || "",
+        trialMaxSlots: trialMaxSlots?.value ? parseInt(trialMaxSlots.value) : 100,
+        trialExpiresAt: trialExpiresAt?.value || null
+      });
+    } catch (error) {
+      console.error("Get trial config error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/trial/config", authMiddleware, async (req, res) => {
+    try {
+      const { trialKey, trialMaxSlots, trialExpiresAt } = req.body;
+      await storage.setSetting("trial_key", trialKey || null);
+      await storage.setSetting("trial_max_slots", trialMaxSlots ? trialMaxSlots.toString() : "100");
+      await storage.setSetting("trial_expires_at", trialExpiresAt || null);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Set trial config error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.get("/api/trial/devices", authMiddleware, async (req, res) => {
+    try {
+      const limit = Number(req.query.limit) || 100;
+      const offset = Number(req.query.offset) || 0;
+      const search = req.query.search ? String(req.query.search) : undefined;
+      const isActiveStr = req.query.isActive as string;
+      const isActive = isActiveStr === "1" ? 1 : isActiveStr === "0" ? 0 : undefined;
+      
+      const devices = await storage.getTrialDevicesPaginated(limit, offset, { search, isActive });
+      const total = await storage.getTrialDevicesTotal({ search, isActive });
+      const activeCount = await storage.getTrialDevicesTotal({ isActive: 1 });
+      
+      res.json({ devices, total, activeCount });
+    } catch (error) {
+      console.error("Get trial devices error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/trial/heartbeat", apiLimiter, async (req, res) => {
+    try {
+      const { hwid, key } = req.body;
+      if (!hwid || !key) return res.status(400).json({ success: false });
+      
+      const trialKeySetting = await storage.getSetting("trial_key");
+      if (!trialKeySetting || trialKeySetting.value !== key) {
+        return res.status(403).json({ success: false });
+      }
+      
+      const device = await storage.getTrialDeviceByHwid(hwid);
+      if (device) {
+        await storage.updateTrialDevice(hwid, { isActive: 1, lastSeenAt: new Date() });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ success: false });
+    }
+  });
+  
+  // Cleanup Cron (runs every 2 minutes)
+  setInterval(() => {
+    storage.cleanupInactiveTrialDevices(10).catch(err => {
+      console.error("Failed to cleanup inactive trial devices:", err);
+    });
+  }, 2 * 60 * 1000);
   // ─────────────────────────────────────────────────────────────────────────
 
   app.get("/api/health", (req, res) => {

@@ -27,3 +27,15 @@ pool.query(`
     END IF;
   END $$;
 `).catch(err => console.error("Auto-migrate folder column failed:", err));
+
+// Auto-migrate trial_devices table
+pool.query(`
+  CREATE TABLE IF NOT EXISTS "trial_devices" (
+    "id" serial PRIMARY KEY NOT NULL,
+    "hwid" text NOT NULL,
+    "first_used_at" timestamp DEFAULT now() NOT NULL,
+    "last_seen_at" timestamp DEFAULT now() NOT NULL,
+    "is_active" integer DEFAULT 0 NOT NULL,
+    CONSTRAINT "trial_devices_hwid_unique" UNIQUE("hwid")
+  );
+`).catch(err => console.error("Auto-migrate trial_devices failed:", err));

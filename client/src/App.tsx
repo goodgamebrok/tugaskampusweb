@@ -27,6 +27,7 @@ import GameSupportAdmin from "@/pages/game-support-admin";
 import UsersAdmin from "@/pages/users-admin";
 import OrdersAdmin from "@/pages/orders-admin";
 import ScriptsAdmin from "@/pages/scripts-admin";
+import FreeTrialAdmin from "@/pages/free-trial-admin";
 import BeliSekarang from "@/pages/beli";
 import UserLogin from "@/pages/user-login";
 import UserRegister from "@/pages/user-register";
@@ -72,6 +73,7 @@ function AdminProtectedRouter() {
       <Route path="/kings/game-support" component={GameSupportAdmin} />
       <Route path="/kings/users" component={UsersAdmin} />
       <Route path="/kings/scripts" component={ScriptsAdmin} />
+      <Route path="/kings/free-trial" component={FreeTrialAdmin} />
       <Route component={NotFound} />
     </Switch>
   );
