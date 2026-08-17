@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { Loader2, MonitorPlay, Activity } from "lucide-react";
+import { Loader2, MonitorPlay, Activity, Copy, ChevronLeft, ChevronRight } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
@@ -19,16 +19,22 @@ export default function FreeTrialAdmin() {
   });
   const config = configData as any;
 
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  
   const { data: rawDevicesData, isLoading: isDevicesLoading, refetch: refetchDevices } = useQuery({
-    queryKey: ["/api/trial/devices", { isActive: "1" }], // Default to show only active
-    refetchInterval: 5000, // Live update every 5 seconds
+    queryKey: ["/api/trial/devices", { isActive: "1", page }], 
+    queryFn: async () => {
+      return await apiRequest("GET", `/api/trial/devices?limit=${limit}&offset=${(page - 1) * limit}&isActive=1`);
+    },
+    refetchInterval: 5000, 
   });
   const devicesData = rawDevicesData as any;
 
   const updateConfigMutation = useMutation({
     mutationFn: async (data: any) => {
       const res = await apiRequest("POST", "/api/trial/config", data);
-      return res.json();
+      return res; // apiRequest already parses JSON
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/trial/config"] });
@@ -163,6 +169,107 @@ export default function FreeTrialAdmin() {
                   )}
                 </TableBody>
               </Table>
+            </div>
+            
+            {/* Pagination Controls */}
+            {devicesData?.total > limit && (
+              <div className="flex items-center justify-end gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" /> Prev
+                </Button>
+                <div className="text-sm font-medium">
+                  Page {page} of {Math.ceil(devicesData.total / limit)}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((p) => Math.min(Math.ceil(devicesData.total / limit), p + 1))}
+                  disabled={page >= Math.ceil((devicesData?.total || 0) / limit)}
+                >
+                  Next <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Snippet Card */}
+        <Card className="md:col-span-2 lg:col-span-3">
+          <CardHeader>
+            <CardTitle>Roblox Loader Snippet</CardTitle>
+            <CardDescription>
+              Tambahkan script heartbeat ini agar player tidak kehilangan slot Trial mereka. 
+              Taruh di dalam Loader Script utama bro.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="relative">
+              <pre className="bg-muted text-muted-foreground p-4 rounded-md overflow-x-auto text-sm font-mono whitespace-pre-wrap">
+{`-- Tambahkan script heartbeat ini agar player tidak kehilangan slot Trial mereka
+local hwid = game:GetService("RbxAnalyticsService"):GetClientId()
+local trialKey = "${config?.trialKey || 'FREETRIAL-KUN'}" -- Sesuai dengan Trial Key yang dibuat di Panel
+local ApiUrl = window.location.origin -- (Ganti dengan https://URL-WEB-BRO.up.railway.app di script Roblox asli)
+
+task.spawn(function()
+    while true do
+        task.wait(300) -- Heartbeat dikirim setiap 5 menit (300 detik)
+        pcall(function()
+            local HttpService = game:GetService("HttpService")
+            request({
+                Url = ApiUrl .. "/api/trial/heartbeat",
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = HttpService:JSONEncode({
+                    hwid = hwid,
+                    key = trialKey
+                })
+            })
+        end)
+    end
+end)`}
+              </pre>
+              <Button 
+                size="icon" 
+                variant="secondary" 
+                className="absolute top-4 right-4"
+                onClick={() => {
+                  const code = `-- Tambahkan script heartbeat ini agar player tidak kehilangan slot Trial mereka
+local hwid = game:GetService("RbxAnalyticsService"):GetClientId()
+local trialKey = "${config?.trialKey || 'FREETRIAL-KUN'}"
+local ApiUrl = "https://" .. "(GANTI_DENGAN_URL_RAILWAY_BRO)"
+
+task.spawn(function()
+    while true do
+        task.wait(300)
+        pcall(function()
+            local HttpService = game:GetService("HttpService")
+            request({
+                Url = ApiUrl .. "/api/trial/heartbeat",
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = HttpService:JSONEncode({
+                    hwid = hwid,
+                    key = trialKey
+                })
+            })
+        end)
+    end
+end)`;
+                  navigator.clipboard.writeText(code);
+                  toast({ title: "Copied", description: "Snippet disalin ke clipboard!" });
+                }}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
             </div>
           </CardContent>
         </Card>
