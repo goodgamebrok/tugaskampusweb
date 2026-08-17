@@ -2430,11 +2430,11 @@ export async function registerRoutes(
 
   app.post("/api/scripts", authMiddleware, async (req, res) => {
     try {
-      const { name, content } = req.body;
+      const { name, content, folder } = req.body;
       if (!name || !content) return res.status(400).json({ message: "Name and content are required" });
       const existing = await storage.getScriptByName(name);
       if (existing) return res.status(400).json({ message: "Script with this name already exists" });
-      const script = await storage.createScript({ name, content });
+      const script = await storage.createScript({ name, content, folder: folder || null });
       res.status(201).json(script);
     } catch (error) {
       console.error("Create script error:", error);
@@ -2446,7 +2446,7 @@ export async function registerRoutes(
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
-      const { name, content } = req.body;
+      const { name, content, folder } = req.body;
       if (!name || !content) return res.status(400).json({ message: "Name and content are required" });
       const script = await storage.getScript(id);
       if (!script) return res.status(404).json({ message: "Not found" });
@@ -2454,7 +2454,7 @@ export async function registerRoutes(
         const existing = await storage.getScriptByName(name);
         if (existing) return res.status(400).json({ message: "Script with this name already exists" });
       }
-      const updated = await storage.updateScript(id, { name, content });
+      const updated = await storage.updateScript(id, { name, content, folder: folder || null });
       res.json(updated);
     } catch (error) {
       console.error("Update script error:", error);

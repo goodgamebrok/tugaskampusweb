@@ -15,6 +15,13 @@
       "when": 1755993600000,
       "tag": "0001_add_scripts_table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1755993700000,
+      "tag": "0002_add_scripts_folder",
+      "breakpoints": true
     }
   ]
 }

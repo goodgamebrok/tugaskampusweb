@@ -6,7 +6,12 @@ import {
   Trash2,
   Loader2,
   Copy,
-  TerminalSquare
+  TerminalSquare,
+  FolderOpen,
+  Folder,
+  ChevronRight,
+  ChevronDown,
+  FolderPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +39,6 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
@@ -45,6 +49,7 @@ import type { Script } from "@shared/schema";
 const defaultForm = {
   name: "",
   content: "",
+  folder: "",
 };
 
 export default function ScriptsAdmin() {
@@ -54,7 +59,8 @@ export default function ScriptsAdmin() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const { toast } = useToast();
   const [page, setPage] = useState(1);
-  const pageSize = 20;
+  const pageSize = 100; // fetch all, group client-side
+  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set());
 
   const { data, isLoading } = useQuery<{ data: Script[]; total: number }>({
     queryKey: ["/api/scripts", page],
@@ -62,10 +68,31 @@ export default function ScriptsAdmin() {
       return apiRequest("GET", `/api/scripts?limit=${pageSize}&page=${page}`);
     },
   });
-  
+
   const items = data?.data || [];
   const total = data?.total || 0;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  // Group by folder
+  const grouped: Record<string, Script[]> = {};
+  const rootScripts: Script[] = [];
+  for (const item of items) {
+    if (item.folder) {
+      if (!grouped[item.folder]) grouped[item.folder] = [];
+      grouped[item.folder].push(item);
+    } else {
+      rootScripts.push(item);
+    }
+  }
+  const folderNames = Object.keys(grouped).sort();
+
+  const toggleFolder = (name: string) => {
+    setCollapsedFolders((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+  };
 
   const createMutation = useMutation({
     mutationFn: (data: typeof defaultForm) =>
@@ -126,16 +153,22 @@ export default function ScriptsAdmin() {
       });
     }
 
+    const payload = {
+      name: form.name,
+      content: form.content,
+      folder: form.folder.trim() || "",
+    };
+
     if (editing) {
-      updateMutation.mutate({ ...form, id: editing.id });
+      updateMutation.mutate({ ...payload, id: editing.id });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate(payload);
     }
   };
 
-  const openNew = () => {
+  const openNew = (defaultFolder = "") => {
     setEditing(null);
-    setForm(defaultForm);
+    setForm({ ...defaultForm, folder: defaultFolder });
     setDialogOpen(true);
   };
 
@@ -144,20 +177,47 @@ export default function ScriptsAdmin() {
     setForm({
       name: item.name,
       content: item.content,
+      folder: item.folder || "",
     });
     setDialogOpen(true);
   };
-  
-  const handleCopyLink = (name: string) => {
-    const url = `${window.location.origin}/raw/${name}`;
-    navigator.clipboard.writeText(url);
-    toast({
-      title: "URL Tercopy",
-      description: "URL raw script telah dicopy ke clipboard",
-    });
-  };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
+
+  const ScriptRow = ({ item }: { item: Script }) => {
+    const rawUrl = `${window.location.origin}/raw/${item.name}`;
+    const loadstring = `loadstring(game:HttpGet('${rawUrl}'))()`;
+    return (
+      <div className="grid grid-cols-[1fr_2fr_150px] items-center p-3 hover:bg-muted/50 transition-colors">
+        <div className="font-mono text-sm">{item.name}</div>
+        <div className="flex items-center gap-2 overflow-hidden">
+          <code className="text-xs bg-muted px-2 py-1 rounded truncate max-w-[80%]">
+            {loadstring}
+          </code>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0"
+            onClick={() => {
+              navigator.clipboard.writeText(loadstring);
+              toast({ title: "Loadstring disalin!" });
+            }}
+            title="Copy Loadstring"
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="text-right space-x-2">
+          <Button variant="outline" size="icon" onClick={() => openEdit(item)}>
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button variant="destructive" size="icon" onClick={() => setDeleteId(item.id)}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -168,7 +228,7 @@ export default function ScriptsAdmin() {
             Kelola file script yang dapat dipanggil langsung dari eksekutor Roblox.
           </p>
         </div>
-        <Button onClick={openNew}>
+        <Button onClick={() => openNew()}>
           <Plus className="mr-2 h-4 w-4" /> Tambah Script
         </Button>
       </div>
@@ -177,17 +237,18 @@ export default function ScriptsAdmin() {
         <CardHeader>
           <CardTitle>Daftar Script</CardTitle>
           <CardDescription>
-            {total} script tersimpan di database
+            {total} script tersimpan di database · {folderNames.length} folder
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="rounded-md border">
-            <div className="grid grid-cols-[1fr_2fr_150px] items-center p-4 font-medium border-b bg-muted/50">
+            {/* Header */}
+            <div className="grid grid-cols-[1fr_2fr_150px] items-center p-3 font-medium border-b bg-muted/50 text-sm">
               <div>Nama Script</div>
               <div>Raw URL (Loadstring)</div>
               <div className="text-right">Aksi</div>
             </div>
-            
+
             {isLoading ? (
               <div className="p-8 text-center text-muted-foreground flex items-center justify-center">
                 <Loader2 className="h-6 w-6 animate-spin mr-2" />
@@ -199,84 +260,80 @@ export default function ScriptsAdmin() {
                 <p>Belum ada script yang ditambahkan.</p>
               </div>
             ) : (
-              <div className="divide-y">
-                {items.map((item) => {
-                  const rawUrl = `${window.location.origin}/raw/${item.name}`;
-                  const loadstring = `loadstring(game:HttpGet('${rawUrl}'))()`;
+              <div>
+                {/* Folder Groups */}
+                {folderNames.map((folderName) => {
+                  const isCollapsed = collapsedFolders.has(folderName);
+                  const folderScripts = grouped[folderName];
                   return (
-                    <div
-                      key={item.id}
-                      className="grid grid-cols-[1fr_2fr_150px] items-center p-4 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="font-mono text-sm">{item.name}</div>
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <code className="text-xs bg-muted px-2 py-1 rounded truncate max-w-[80%]">
-                          {loadstring}
-                        </code>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 shrink-0"
-                          onClick={() => {
-                            navigator.clipboard.writeText(loadstring);
-                            toast({ title: "Loadstring disalin!" });
+                    <div key={folderName} className="border-b last:border-b-0">
+                      {/* Folder Header Row */}
+                      <div
+                        className="flex items-center gap-2 px-3 py-2 bg-muted/30 cursor-pointer hover:bg-muted/60 transition-colors select-none"
+                        onClick={() => toggleFolder(folderName)}
+                      >
+                        {isCollapsed ? (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+                        )}
+                        {isCollapsed ? (
+                          <Folder className="h-4 w-4 text-yellow-400 shrink-0" />
+                        ) : (
+                          <FolderOpen className="h-4 w-4 text-yellow-400 shrink-0" />
+                        )}
+                        <span className="font-semibold text-sm">{folderName}</span>
+                        <span className="text-xs text-muted-foreground ml-1">
+                          ({folderScripts.length} script)
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 ml-auto"
+                          title={`Tambah script ke folder "${folderName}"`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openNew(folderName);
                           }}
-                          title="Copy Loadstring"
                         >
-                          <Copy className="h-4 w-4" />
+                          <Plus className="h-3 w-3" />
                         </Button>
                       </div>
-                      <div className="text-right space-x-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => openEdit(item)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => setDeleteId(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      {/* Scripts in folder */}
+                      {!isCollapsed && (
+                        <div className="divide-y pl-6 border-l-2 border-yellow-400/30 ml-3">
+                          {folderScripts.map((item) => (
+                            <ScriptRow key={item.id} item={item} />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
+
+                {/* Root scripts (no folder) */}
+                {rootScripts.length > 0 && (
+                  <div className={folderNames.length > 0 ? "border-t" : ""}>
+                    {folderNames.length > 0 && (
+                      <div className="flex items-center gap-2 px-3 py-2 bg-muted/10 text-xs text-muted-foreground">
+                        <TerminalSquare className="h-3 w-3" />
+                        <span>Tanpa Folder</span>
+                      </div>
+                    )}
+                    <div className="divide-y">
+                      {rootScripts.map((item) => (
+                        <ScriptRow key={item.id} item={item} />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
-
-          {totalPages > 1 && (
-            <div className="mt-4 flex justify-center">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                    />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <span className="px-4 text-sm font-medium">
-                      Halaman {page} dari {totalPages}
-                    </span>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
         </CardContent>
       </Card>
 
+      {/* Dialog Create/Edit */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
@@ -286,35 +343,59 @@ export default function ScriptsAdmin() {
           </DialogHeader>
 
           <div className="space-y-4 py-4 flex-1 overflow-y-auto">
-            <div className="space-y-2">
-              <Label>Nama Script (Untuk URL)</Label>
-              <Input
-                placeholder="contoh: main-script"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value.replace(/[^a-zA-Z0-9_-]/g, '') })}
-              />
-              <p className="text-xs text-muted-foreground">
-                Hanya huruf, angka, strip (-), dan underscore (_). Akan jadi URL: /raw/nama-script
-              </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Nama Script (Untuk URL)</Label>
+                <Input
+                  placeholder="contoh: main-script"
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm({ ...form, name: e.target.value.replace(/[^a-zA-Z0-9_-]/g, "") })
+                  }
+                />
+                <p className="text-xs text-muted-foreground">
+                  Hanya huruf, angka, strip (-), underscore (_).
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label>
+                  Folder{" "}
+                  <span className="text-muted-foreground font-normal">(Opsional)</span>
+                </Label>
+                <div className="relative">
+                  <FolderPlus className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="contoh: Blox Fruits"
+                    value={form.folder}
+                    onChange={(e) => setForm({ ...form, folder: e.target.value })}
+                    className="pl-9"
+                    list="folder-suggestions"
+                  />
+                </div>
+                <datalist id="folder-suggestions">
+                  {folderNames.map((f) => (
+                    <option key={f} value={f} />
+                  ))}
+                </datalist>
+                <p className="text-xs text-muted-foreground">
+                  Kosongkan jika tidak mau dimasukkan folder.
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2 h-full flex flex-col min-h-[300px]">
+            <div className="space-y-2 flex flex-col min-h-[300px]">
               <Label>Isi Script (Lua Code)</Label>
               <Textarea
                 placeholder="print('Hello World')"
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
-                className="font-mono text-sm flex-1"
+                className="font-mono text-sm flex-1 min-h-[280px]"
               />
             </div>
           </div>
 
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDialogOpen(false)}
-              disabled={isPending}
-            >
+            <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={isPending}>
               Batal
             </Button>
             <Button onClick={onSubmit} disabled={isPending}>
@@ -325,6 +406,7 @@ export default function ScriptsAdmin() {
         </DialogContent>
       </Dialog>
 
+      {/* Alert Delete */}
       <AlertDialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

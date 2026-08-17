@@ -175,6 +175,7 @@ export const scripts = pgTable("scripts", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
   content: text("content").notNull(),
+  folder: text("folder"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
