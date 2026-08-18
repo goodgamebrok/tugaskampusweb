@@ -2585,7 +2585,7 @@ while true do end
 
       // 2. Auth Headers Check
       if (!authKey || !authHwid) {
-        return res.type('text/plain').send("-- [KV] Missing Authentication. You cannot fetch this directly.");
+        return res.status(403).type('text/plain').send("-- [KV] Missing Authentication. You cannot fetch this directly.");
       }
 
       let isAuthenticated = false;
@@ -2595,14 +2595,14 @@ while true do end
       if (trialKeySetting && trialKeySetting.value === authKey) {
         const expiresAtSetting = await storage.getSetting("trial_expires_at");
         if (expiresAtSetting && expiresAtSetting.value && new Date(expiresAtSetting.value) < new Date()) {
-          return res.type('text/plain').send("-- [KV] Trial key expired");
+          return res.status(403).type('text/plain').send("-- [KV] Trial key expired");
         }
         
         let device = await storage.getTrialDeviceByHwid(authHwid);
         if (device && device.isActive === 1) {
           isAuthenticated = true; // They are currently active
         } else {
-          return res.type('text/plain').send("-- [KV] Trial slot not active. Please validate first.");
+          return res.status(403).type('text/plain').send("-- [KV] Trial slot not active. Please validate first.");
         }
       }
 
@@ -2610,13 +2610,13 @@ while true do end
       if (!isAuthenticated) {
         const key = await storage.getKeyByCode(authKey);
         if (!key || key.status !== "active" || key.hwid !== authHwid) {
-           return res.type('text/plain').send("-- [KV] Invalid or unauthorized Premium Key");
+           return res.status(403).type('text/plain').send("-- [KV] Invalid or unauthorized Premium Key");
         }
         isAuthenticated = true;
       }
 
       if (!isAuthenticated) {
-        return res.type('text/plain').send("-- [KV] Access Denied");
+        return res.status(403).type('text/plain').send("-- [KV] Access Denied");
       }
 
       // 3. Serve Script
