@@ -2564,13 +2564,11 @@ export async function registerRoutes(
     try {
       const userAgent = (req.headers["user-agent"] || "").toLowerCase();
       
-      // Deteksi browser biasa (Chrome, Firefox, Safari, dll)
-      const isBrowser = userAgent.includes("mozilla") || userAgent.includes("chrome") || userAgent.includes("safari") || userAgent.includes("edge");
+      // Daftar keyword executor populer & client roblox bawaan
+      const allowedAgents = ["roblox", "synapse", "krnl", "fluxus", "delta", "hydrogen", "arceus", "codex", "vega", "evon", "executor", "shadow", "trigon", "macsploit"];
+      const isAllowed = allowedAgents.some(agent => userAgent.includes(agent));
       
-      // Izinkan eksekutor Roblox (kalau mereka secara eksplisit pakai nama mereka)
-      const isRoblox = userAgent.includes("roblox") || userAgent.includes("synapse") || userAgent.includes("krnl") || userAgent.includes("fluxus") || userAgent.includes("delta");
-      
-      if (isBrowser && !isRoblox) {
+      if (!isAllowed) {
         // Berikan fake obfuscated script ke browser biar mereka pusing
         const fakeObfuscated = `-- Obfuscated with MoonSec V3 / Protected by KingVypers
 local IllIllII = {12, 54, 12, 76, 23, 98, 11}
