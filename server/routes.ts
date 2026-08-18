@@ -2559,13 +2559,15 @@ export async function registerRoutes(
     }
   });
 
-  // Secured Raw Endpoint (Requires Key & HWID)
+  // Secured Raw Endpoint (Requires Key & HWID, except for 'Public' folder)
   app.get("/raw/:name", async (req, res) => {
     try {
-      const userAgent = (req.headers["user-agent"] || "").toLowerCase();
-      const authKey = req.headers["x-auth-key"] as string;
-      const authHwid = req.headers["x-auth-hwid"] as string;
+      const name = req.params.name;
+      const script = await storage.getScriptByName(name);
+      if (!script) return res.status(404).send("-- 404: Script not found");
 
+      const userAgent = (req.headers["user-agent"] || "").toLowerCase();
+      
       const fakeObfuscated = `-- Obfuscated with MoonSec V3 / Protected by KingVypers
 local IllIllII = {12, 54, 12, 76, 23, 98, 11}
 local llIIllII = "ERROR_UNAUTHORIZED_ENVIRONMENT"
@@ -2575,7 +2577,7 @@ print("[KingVypers] Invalid execution environment detected. Aborting.")
 while true do end
 `;
 
-      // 1. User-Agent Check
+      // 1. User-Agent Check (Tetap berlaku untuk semua script agar browser/proxy diblok)
       const allowedAgents = ["roblox", "synapse", "krnl", "fluxus", "delta", "hydrogen", "arceus", "codex", "vega", "evon", "executor", "shadow", "trigon", "macsploit"];
       const isAllowedAgent = allowedAgents.some(agent => userAgent.includes(agent));
       
@@ -2583,47 +2585,51 @@ while true do end
         return res.type('text/plain').send(fakeObfuscated);
       }
 
-      // 2. Auth Headers Check
-      if (!authKey || !authHwid) {
-        return res.status(403).type('text/plain').send("-- [KV] Missing Authentication. You cannot fetch this directly.");
-      }
+      // Jika script ditaruh di folder "Public" atau "public", lewati pengecekan Key & HWID
+      const isPublicScript = script.folder && script.folder.toLowerCase() === "public";
 
-      let isAuthenticated = false;
+      if (!isPublicScript) {
+        const authKey = req.headers["x-auth-key"] as string;
+        const authHwid = req.headers["x-auth-hwid"] as string;
 
-      // Check Trial Key
-      const trialKeySetting = await storage.getSetting("trial_key");
-      if (trialKeySetting && trialKeySetting.value === authKey) {
-        const expiresAtSetting = await storage.getSetting("trial_expires_at");
-        if (expiresAtSetting && expiresAtSetting.value && new Date(expiresAtSetting.value) < new Date()) {
-          return res.status(403).type('text/plain').send("-- [KV] Trial key expired");
+        // 2. Auth Headers Check
+        if (!authKey || !authHwid) {
+          return res.status(403).type('text/plain').send("-- [KV] Missing Authentication. You cannot fetch this directly.");
         }
-        
-        let device = await storage.getTrialDeviceByHwid(authHwid);
-        if (device && device.isActive === 1) {
-          isAuthenticated = true; // They are currently active
-        } else {
-          return res.status(403).type('text/plain').send("-- [KV] Trial slot not active. Please validate first.");
-        }
-      }
 
-      // Check Premium Key
-      if (!isAuthenticated) {
-        const key = await storage.getKeyByCode(authKey);
-        if (!key || key.status !== "active" || key.hwid !== authHwid) {
-           return res.status(403).type('text/plain').send("-- [KV] Invalid or unauthorized Premium Key");
-        }
-        isAuthenticated = true;
-      }
+        let isAuthenticated = false;
 
-      if (!isAuthenticated) {
-        return res.status(403).type('text/plain').send("-- [KV] Access Denied");
+        // Check Trial Key
+        const trialKeySetting = await storage.getSetting("trial_key");
+        if (trialKeySetting && trialKeySetting.value === authKey) {
+          const expiresAtSetting = await storage.getSetting("trial_expires_at");
+          if (expiresAtSetting && expiresAtSetting.value && new Date(expiresAtSetting.value) < new Date()) {
+            return res.status(403).type('text/plain').send("-- [KV] Trial key expired");
+          }
+          
+          let device = await storage.getTrialDeviceByHwid(authHwid);
+          if (device && device.isActive === 1) {
+            isAuthenticated = true; // They are currently active
+          } else {
+            return res.status(403).type('text/plain').send("-- [KV] Trial slot not active. Please validate first.");
+          }
+        }
+
+        // Check Premium Key
+        if (!isAuthenticated) {
+          const key = await storage.getKeyByCode(authKey);
+          if (!key || key.status !== "active" || key.hwid !== authHwid) {
+             return res.status(403).type('text/plain').send("-- [KV] Invalid or unauthorized Premium Key");
+          }
+          isAuthenticated = true;
+        }
+
+        if (!isAuthenticated) {
+          return res.status(403).type('text/plain').send("-- [KV] Access Denied");
+        }
       }
 
       // 3. Serve Script
-      const name = req.params.name;
-      const script = await storage.getScriptByName(name);
-      if (!script) return res.status(404).send("-- 404: Script not found");
-      
       res.type('text/plain').send(script.content);
     } catch (error) {
       console.error("Raw script error:", error);
